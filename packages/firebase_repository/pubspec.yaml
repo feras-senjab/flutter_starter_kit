@@ -1,0 +1,13 @@
+name: firebase_repository
+
+
+environment:
+  sdk: ">=2.16.0 <3.0.0"
+
+dev_dependencies:
+  flutter_lints: ^1.0.4  
+
+dependencies: 
+  equatable:
+  cloud_firestore:
+  firebase_core:

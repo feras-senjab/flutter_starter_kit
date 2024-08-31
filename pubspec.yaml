@@ -1,0 +1,37 @@
+name: flutter_starter_kit
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  sizer: ^2.0.15
+  device_preview: ^1.2.0
+  flutter_bloc: ^8.1.6
+  equatable:
+  shared_preferences: ^2.3.2
+  flutter_spinkit: ^5.2.1
+  form_validators:
+    path: packages/form_validators
+  auth_repository:
+    path: packages/auth_repository
+  firebase_repository:
+    path: packages/firebase_repository
+  firebase_core:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
