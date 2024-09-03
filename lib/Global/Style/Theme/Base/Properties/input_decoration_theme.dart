@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/Base/Properties/helpers/widget_state_helper.dart';
-import 'package:flutter_starter_kit/Global/Style/colors.dart';
 
 import '../../theme_manager.dart';
 import 'models/color_pair.dart';
@@ -32,7 +31,7 @@ class BaseInputDecorationTheme {
     );
 
     const Color hintColor = Colors.grey;
-    const Color errorColor = AppColors.errorColor;
+    final Color errorColor = colorScheme.error;
     final Color borderColor = colorScheme.primary;
     //---------------------------------------------------//
 
@@ -56,7 +55,7 @@ class BaseInputDecorationTheme {
       hintStyle: const TextStyle(
         color: hintColor,
       ),
-      errorStyle: const TextStyle(
+      errorStyle: TextStyle(
         color: errorColor,
       ),
       border: OutlineInputBorder(
@@ -80,13 +79,13 @@ class BaseInputDecorationTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
-        borderSide: const BorderSide(
+        borderSide: BorderSide(
           color: errorColor,
         ),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
-        borderSide: const BorderSide(
+        borderSide: BorderSide(
           color: errorColor,
           width: 2,
         ),

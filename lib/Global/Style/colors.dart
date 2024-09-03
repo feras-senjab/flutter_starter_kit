@@ -22,9 +22,9 @@ class AppColors {
   static const systemNavigationBarColorDark = Colors.transparent;
 
   // ---------------- Shared basic colors ----------------//
-  static const Color errorColor = Colors.red;
-  static const Color successColor = Colors.green;
-  static const Color warningColor = Colors.amber;
+  // static const Color errorColor = Colors.red;
+  // static const Color successColor = Colors.green;
+  // static const Color warningColor = Colors.amber;
 
   // Other custom theme colors can be added here
 }

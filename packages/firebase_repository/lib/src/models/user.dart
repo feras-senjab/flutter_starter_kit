@@ -6,25 +6,41 @@ class FirebaseUserModel extends Equatable {
   final String id;
   final String name;
   final String email;
+  final String? avatarUrl;
+  final String? about;
 
   const FirebaseUserModel({
     required this.id,
     required this.name,
     required this.email,
+    this.avatarUrl,
+    this.about,
   });
 
   @override
-  List<Object> get props => [id, name, email];
+  List<Object?> get props {
+    return [
+      id,
+      name,
+      email,
+      avatarUrl,
+      about,
+    ];
+  }
 
   FirebaseUserModel copyWith({
     String? id,
     String? name,
     String? email,
+    String? avatarUrl,
+    String? about,
   }) {
     return FirebaseUserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      about: about ?? this.about,
     );
   }
 
@@ -33,6 +49,8 @@ class FirebaseUserModel extends Equatable {
       'id': id,
       'name': name,
       'email': email,
+      'avatarUrl': avatarUrl,
+      'about': about,
     };
   }
 
@@ -41,6 +59,8 @@ class FirebaseUserModel extends Equatable {
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
+      avatarUrl: map['avatarUrl'],
+      about: map['about'],
     );
   }
 
@@ -50,5 +70,7 @@ class FirebaseUserModel extends Equatable {
       FirebaseUserModel.fromMap(json.decode(source));
 
   @override
-  String toString() => 'User(id: $id, name: $name, email: $email)';
+  String toString() {
+    return 'FirebaseUserModel(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, about: $about)';
+  }
 }
