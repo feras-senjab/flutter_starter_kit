@@ -2,46 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter_kit/Components/custom_loading.dart';
 
 class LoadingHelper {
-  // Store the BuildContext when loading is shown
-  static BuildContext? _loadingContext;
+  static OverlayEntry? _overlayEntry;
 
-  // Show loading dialog
   static void showLoading(BuildContext context) {
-    // Check if the dialog is already being displayed
-    if (_loadingContext != null) return;
+    // Ensure the overlay is not already shown
+    if (_overlayEntry != null) return;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        // Store the context to be able to dismiss it later
-        _loadingContext = dialogContext;
-        // Use a Builder to always get the latest context
-        return Builder(
-          builder: (BuildContext context) {
-            return Scaffold(
-              backgroundColor:
-                  Theme.of(context).colorScheme.surface.withOpacity(0.8),
-              body: const Center(
-                child: CustomLoading(
-                  text: 'Loading...',
-                ),
-              ),
-            );
-          },
-        );
-      },
-    ).then((_) {
-      // Reset the context when the dialog is dismissed
-      _loadingContext = null;
-    });
+    // Create and insert the overlay entry
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned.fill(
+        child: Material(
+          color: Theme.of(context).colorScheme.surface.withOpacity(0.85),
+          child: const Center(
+            child: CustomLoading(
+              text: 'Loading...',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
-  // Dismiss loading dialog
   static void dismissLoading() {
-    if (_loadingContext != null && Navigator.of(_loadingContext!).canPop()) {
-      Navigator.of(_loadingContext!).pop();
-      _loadingContext = null; // Reset the context
+    // Check if the overlay exists and is still valid
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
     }
+  }
+
+  // Optional: A method to check if loading is currently shown
+  static bool isLoadingShown() {
+    return _overlayEntry != null;
   }
 }
