@@ -45,11 +45,13 @@ android {
     productFlavors {
         dev {
             dimension "environment"
+            resValue "string", "app_name", "Dev Starter Kit"
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
         }
         prod {
             dimension "environment"
+            resValue "string", "app_name", "Starter Kit"
             // No suffix for production
         }
     }
