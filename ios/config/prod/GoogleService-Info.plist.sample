@@ -1,0 +1,21 @@
+<!-- Placeholder for GoogleService-Info.plist for the prod flavor. -->
+
+<!--
+You should replace this file with your actual GoogleService-Info.plist
+file from the Firebase Console, specific to the 'prod' flavor.
+
+Instructions:
+1. Go to the Firebase Console and download the GoogleService-Info.plist file
+   for your 'prod' app configuration.
+2. Place the GoogleService-Info.plist file in this directory:
+   ios/config/prod/GoogleService-Info.plist
+
+To ensure the file is visible in Xcode:
+- Open Xcode.
+- In the project navigator, right-click on the `Runner/config/prod` folder.
+- Choose 'Add Files to "Runner"' and select the `GoogleService-Info.plist` file from `ios/config/prod/`.
+
+Note: Xcode should automatically detect this file due to the run script in your build phases.
+
+You can safely delete this .sample file after adding the actual file.
+-->

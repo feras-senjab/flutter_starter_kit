@@ -1,0 +1,12 @@
+// Placeholder for google-services.json for the prod flavor.
+//
+// You should replace this file with your actual google-services.json
+// file from the Firebase Console, specific to the 'prod' flavor.
+//
+// Instructions:
+// 1. Go to the Firebase Console and download the google-services.json file 
+//    for your 'prod' app configuration.
+// 2. Place the google-services.json file in this directory:
+//    android/app/src/prod/google-services.json
+//
+// It's safe to delete this .sample file after you've added the actual file.
