@@ -1,7 +1,6 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_repository/config.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,10 +32,8 @@ class App extends StatelessWidget {
     Bloc.observer = SimpleBlocObserver();
   }
 
-  //! IMPORTANT: DEFINE DEPLOYMENT ENVIRONMENT BEFORE BUILD OR DEPLOY.
-  //TODO maybe remove deploymentEnv and not having it from now.. relay on flavor
-  final DeploymentEnv deploymentEnv = DeploymentEnv.testing;
   final bool enableDevicePreview = false;
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -45,8 +42,7 @@ class App extends StatelessWidget {
           create: (context) => AuthRepository(),
         ),
         RepositoryProvider<FirebaseUsersRepository>(
-          create: (context) =>
-              FirebaseUsersRepository(deploymentEnv: deploymentEnv),
+          create: (context) => FirebaseUsersRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -75,8 +71,7 @@ class App extends StatelessWidget {
           ],
           // Wrapped with device preview to test responsiveness
           child: DevicePreview(
-            enabled:
-                deploymentEnv == DeploymentEnv.testing && enableDevicePreview,
+            enabled: enableDevicePreview && flavor == Flavor.dev,
             builder: (context) {
               return Sizer(
                 builder: (context, orientation, deviceType) {

@@ -58,7 +58,7 @@ abstract class BaseRepository<T> {
   /// - A `Future` that resolves to the document ID.
   ///
   /// Throws:
-  /// - An `Exception` if [id] passed, [replaceExistedDoc] set to true, and a document is existed.
+  /// - An `Exception` if [id] passed, [replaceExistedDoc] set to false, and a document is existed.
   /// - An `Exception` if the operation fails.
   Future<String> create({
     required T model,

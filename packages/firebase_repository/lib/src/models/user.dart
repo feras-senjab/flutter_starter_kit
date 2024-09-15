@@ -6,6 +6,7 @@ class FirebaseUserModel extends Equatable {
   final String id;
   final String name;
   final String email;
+  //TODO: when implementing more fields.. test and confirm the case of adding field to doc that doesn't have this field in firestore.
   final String? avatarUrl;
   final String? about;
 

@@ -1,10 +1,11 @@
-// ignore_for_file: unused_element
+// ignore_for_file: unused_element, unused_import
 
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
 import '../../../config.dart';
+
 import '../base_repository/base_repository.dart';
 
 //------------------------------------------------------------------------------//
@@ -65,10 +66,7 @@ class _SubModel extends Equatable {
 //------------------------------------------------------------------------------//
 //! Now let's implement SubRepository to show how it looks like..
 class _SubRepository extends BaseRepository<_SubModel> {
-  // Determine the deployment environment to specify in which collection to make operations (test / production.. or maybe other in future..)
-  // ! Take a look to config file.. where you have also to determine collectionPath
-  final DeploymentEnv deploymentEnv;
-  _SubRepository({required this.deploymentEnv})
+  _SubRepository()
       : super(
           fromMap: (map) => _SubModel.fromMap(map),
           toMap: (subModel) => subModel.toMap(),
@@ -76,13 +74,13 @@ class _SubRepository extends BaseRepository<_SubModel> {
 
   @override
   //! This line should be the following commented call:
-  // String get collectionPath => Config(deploymentEnv: deploymentEnv).subCollection;
-  // And you need to define 'subCollection' im config file to make it work..
+  // String get collectionPath => Config.subCollection;
+  // And you need to define 'subCollection' in config file to make it work..
   // For now as it's explanation purpose gonne set just string
   String get collectionPath => 'collectionPath';
 }
 
 //! This is it.. the _SubRepository now can implement all the functions of BaseRepository
 // And now you can add extra functions to _SubRepository.. 
-// Or override a functions of baseRepository inside subRepository...
+// Or override functions of baseRepository inside subRepository...
 // This will save you from repeating common functions for each repository..
