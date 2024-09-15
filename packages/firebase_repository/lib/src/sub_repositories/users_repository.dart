@@ -4,8 +4,7 @@ import '../models/user.dart';
 
 /// A repository for managing user documents in Firestore.
 ///
-/// Extends [BaseRepository] to handle user-specific operations and manage
-/// interactions with Firestore collections based on deployment environments.
+/// Extends [BaseRepository] to implement and manage CRUD operations for users.
 class FirebaseUsersRepository extends BaseRepository<FirebaseUserModel> {
   FirebaseUsersRepository()
       : super(
