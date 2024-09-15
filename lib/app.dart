@@ -79,7 +79,7 @@ class App extends StatelessWidget {
                     buildWhen: (previous, current) => previous != current,
                     builder: (context, state) {
                       return MaterialApp(
-                        debugShowCheckedModeBanner: false,
+                        debugShowCheckedModeBanner: flavor == Flavor.dev,
                         title: 'Flutter Starter Code',
                         theme: state.appTheme.themeData,
                         home: BlocBuilder<AuthBloc, AuthState>(
