@@ -1,6 +1,6 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
-import 'package:firebase_repository/firebase_repository.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_validators/form_validators.dart';
@@ -16,7 +16,7 @@ class SignupCubit extends Cubit<SignupState> {
 
   final AuthRepository authRepository;
   final AuthBloc authBloc;
-  final FirebaseUsersRepository userRepository;
+  final FirestoreUsersRepository userRepository;
 
   void nameChanged(String value) {
     final name = Name.dirty(value);
@@ -97,7 +97,7 @@ class SignupCubit extends Cubit<SignupState> {
       await userRepository
           .create(
         id: userId,
-        model: FirebaseUserModel(
+        model: FirestoreUserModel(
           id: userId,
           name: state.name.value,
           email: state.email.value,

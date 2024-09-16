@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class FirebaseUserModel extends Equatable {
+class FirestoreUserModel extends Equatable {
   final String id;
   final String name;
   final String email;
@@ -10,7 +10,7 @@ class FirebaseUserModel extends Equatable {
   final String? avatarUrl;
   final String? about;
 
-  const FirebaseUserModel({
+  const FirestoreUserModel({
     required this.id,
     required this.name,
     required this.email,
@@ -29,14 +29,14 @@ class FirebaseUserModel extends Equatable {
     ];
   }
 
-  FirebaseUserModel copyWith({
+  FirestoreUserModel copyWith({
     String? id,
     String? name,
     String? email,
     String? avatarUrl,
     String? about,
   }) {
-    return FirebaseUserModel(
+    return FirestoreUserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
@@ -55,8 +55,8 @@ class FirebaseUserModel extends Equatable {
     };
   }
 
-  factory FirebaseUserModel.fromMap(Map<String, dynamic> map) {
-    return FirebaseUserModel(
+  factory FirestoreUserModel.fromMap(Map<String, dynamic> map) {
+    return FirestoreUserModel(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
@@ -67,11 +67,11 @@ class FirebaseUserModel extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory FirebaseUserModel.fromJson(String source) =>
-      FirebaseUserModel.fromMap(json.decode(source));
+  factory FirestoreUserModel.fromJson(String source) =>
+      FirestoreUserModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'FirebaseUserModel(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, about: $about)';
+    return 'FirestoreUserModel(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, about: $about)';
   }
 }

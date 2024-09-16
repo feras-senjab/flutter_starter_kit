@@ -1,7 +1,7 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_repository/firebase_repository.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_kit/Config/simple_bloc_observer.dart';
@@ -41,8 +41,8 @@ class App extends StatelessWidget {
         RepositoryProvider<AuthRepository>(
           create: (context) => AuthRepository(),
         ),
-        RepositoryProvider<FirebaseUsersRepository>(
-          create: (context) => FirebaseUsersRepository(),
+        RepositoryProvider<FirestoreUsersRepository>(
+          create: (context) => FirestoreUsersRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -58,7 +58,7 @@ class App extends StatelessWidget {
             BlocProvider(
               create: (BuildContext context) => UserModelCubit(
                 authBloc: context.read<AuthBloc>(),
-                usersRepository: context.read<FirebaseUsersRepository>(),
+                usersRepository: context.read<FirestoreUsersRepository>(),
               ),
             ),
             BlocProvider(

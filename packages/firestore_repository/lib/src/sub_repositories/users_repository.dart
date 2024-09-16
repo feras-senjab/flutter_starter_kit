@@ -1,14 +1,14 @@
 import '../../../config.dart';
 import '../base_repository/base_repository.dart';
-import '../models/user.dart';
+import '../models/models.dart';
 
 /// A repository for managing user documents in Firestore.
 ///
 /// Extends [BaseRepository] to implement and manage CRUD operations for users.
-class FirebaseUsersRepository extends BaseRepository<FirebaseUserModel> {
-  FirebaseUsersRepository()
+class FirestoreUsersRepository extends BaseRepository<FirestoreUserModel> {
+  FirestoreUsersRepository()
       : super(
-          fromMap: (map) => FirebaseUserModel.fromMap(map),
+          fromMap: (map) => FirestoreUserModel.fromMap(map),
           toMap: (user) => user.toMap(),
         );
 

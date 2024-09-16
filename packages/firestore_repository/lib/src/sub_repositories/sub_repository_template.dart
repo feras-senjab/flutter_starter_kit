@@ -8,6 +8,8 @@ import '../../../config.dart';
 
 import '../base_repository/base_repository.dart';
 
+import '../models/models.dart';
+
 //------------------------------------------------------------------------------//
 //! This file not to be used anywhere.. don't export it or use it..
 //! it's just to explain how to extend base_repository with sub_repository.

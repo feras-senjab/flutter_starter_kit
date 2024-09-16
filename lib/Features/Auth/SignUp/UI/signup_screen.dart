@@ -8,7 +8,7 @@ import 'package:flutter_starter_kit/Features/AppGate/UI/app_gate.dart';
 import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
 import 'package:flutter_starter_kit/Helpers/loading_helper.dart';
 import 'package:flutter_starter_kit/Helpers/nav_helper.dart';
-import 'package:firebase_repository/firebase_repository.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validators/form_validators.dart';
@@ -23,7 +23,7 @@ class SignupScreen extends StatelessWidget {
       create: (context) => SignupCubit(
         authBloc: context.read<AuthBloc>(),
         authRepository: context.read<AuthRepository>(),
-        userRepository: context.read<FirebaseUsersRepository>(),
+        userRepository: context.read<FirestoreUsersRepository>(),
       ),
       child: BlocConsumer<SignupCubit, SignupState>(
         listenWhen: (previous, current) => previous.status != current.status,

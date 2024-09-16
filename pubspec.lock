@@ -256,10 +256,10 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
-  firebase_repository:
+  firestore_repository:
     dependency: "direct main"
     description:
-      path: "packages/firebase_repository"
+      path: "packages/firestore_repository"
       relative: true
     source: path
     version: "0.0.0"

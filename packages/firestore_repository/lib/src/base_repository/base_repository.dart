@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'query_helpers/condition.dart';
-import 'query_helpers/order_by.dart';
-import 'query_helpers/pagination.dart';
+import 'query_helpers/query_helpers.dart';
 
 /// Base class for Firestore repositories.
 ///

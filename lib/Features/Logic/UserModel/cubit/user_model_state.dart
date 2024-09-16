@@ -6,14 +6,14 @@ class UserModelState extends Equatable {
     this.stateStatus = StateStatus.initial,
   });
 
-  final FirebaseUserModel? userModel;
+  final FirestoreUserModel? userModel;
   final StateStatus stateStatus;
 
   @override
   List<Object?> get props => [userModel, stateStatus];
 
   UserModelState copyWith({
-    FirebaseUserModel? userModel,
+    FirestoreUserModel? userModel,
     StateStatus? stateStatus,
   }) {
     return UserModelState(

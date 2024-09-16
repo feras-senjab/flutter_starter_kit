@@ -23,8 +23,8 @@ dependencies:
     path: packages/form_validators
   auth_repository:
     path: packages/auth_repository
-  firebase_repository:
-    path: packages/firebase_repository
+  firestore_repository:
+    path: packages/firestore_repository
   firebase_core:
   cached_network_image: ^3.4.1
 

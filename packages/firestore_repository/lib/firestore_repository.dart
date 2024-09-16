@@ -1,4 +1,4 @@
-library firebase_repository;
+library firestore_repository;
 
 export 'src/models/models.dart';
 export 'src/sub_repositories/users_repository.dart';

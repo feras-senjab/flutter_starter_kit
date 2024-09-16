@@ -1,5 +1,4 @@
-name: firebase_repository
-
+name: firestore_repository
 
 environment:
   sdk: ">=2.16.0 <3.0.0"

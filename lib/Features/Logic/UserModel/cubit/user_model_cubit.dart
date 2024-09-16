@@ -1,6 +1,6 @@
 import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
 import 'package:flutter_starter_kit/Global/enums.dart';
-import 'package:firebase_repository/firebase_repository.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:developer' as developer;
@@ -13,14 +13,14 @@ class UserModelCubit extends Cubit<UserModelState> {
     required this.authBloc,
   }) : super(const UserModelState());
 
-  final FirebaseUsersRepository usersRepository;
+  final FirestoreUsersRepository usersRepository;
   final AuthBloc authBloc;
 
   Future loadData() async {
     try {
       if (authBloc.state.status == AuthStatus.authenticated) {
         emit(state.copyWith(stateStatus: StateStatus.loading));
-        FirebaseUserModel? userModel =
+        FirestoreUserModel? userModel =
             await usersRepository.getById(id: authBloc.state.user!.id);
 
         // Deal with data not found situation..

@@ -1,6 +1,6 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
-import 'package:firebase_repository/firebase_repository.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_validators/form_validators.dart';
@@ -15,7 +15,7 @@ class LoginCubit extends Cubit<LoginState> {
   }) : super(const LoginState());
 
   final AuthRepository authRepository;
-  final FirebaseUsersRepository userRepository;
+  final FirestoreUsersRepository userRepository;
   final AuthBloc authBloc;
 
   void emailChanged(String value) {
@@ -65,7 +65,7 @@ class LoginCubit extends Cubit<LoginState> {
         await userRepository
             .create(
           id: userCredential.user!.uid,
-          model: FirebaseUserModel(
+          model: FirestoreUserModel(
             id: userCredential.user!.uid,
             name: userCredential.user!.displayName!,
             email: userCredential.user!.email!,
