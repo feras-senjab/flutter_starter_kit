@@ -6,15 +6,15 @@ import 'package:equatable/equatable.dart';
 
 import '../../../config.dart';
 
-import '../base_repository/base_repository.dart';
+import '../base_firestore_repository/base_firestore_repository.dart';
 
 import '../models/models.dart';
 
 //------------------------------------------------------------------------------//
 //! This file not to be used anywhere.. don't export it or use it..
-//! it's just to explain how to extend base_repository with sub_repository.
-// We have base_repository that implements most common CRUD operations.
-// And we can make sub_repositroy like the following to extend the base_repository
+//! it's just to explain how to extend base_firestore_repository with sub_repository.
+// We have base_firestore_repository that implements most common CRUD operations.
+// And we can make sub_repositroy like the following to extend the base_firestore_repository
 // and be able to use its functions..
 // For our sub_repository we'll need to have sub_model to use its fromMap and toMap with the functions.
 //------------------------------------------------------------------------------//
@@ -67,7 +67,7 @@ class _SubModel extends Equatable {
 
 //------------------------------------------------------------------------------//
 //! Now let's implement SubRepository to show how it looks like..
-class _SubRepository extends BaseRepository<_SubModel> {
+class _SubRepository extends BaseFirestoreRepository<_SubModel> {
   _SubRepository()
       : super(
           fromMap: (map) => _SubModel.fromMap(map),
@@ -82,7 +82,7 @@ class _SubRepository extends BaseRepository<_SubModel> {
   String get collectionPath => 'collectionPath';
 }
 
-//! This is it.. the _SubRepository now can implement all the functions of BaseRepository
+//! This is it.. the _SubRepository now can implement all the functions of BaseFirestoreRepository
 // And now you can add extra functions to _SubRepository.. 
-// Or override functions of baseRepository inside subRepository...
+// Or override functions of baseFirestoreRepository inside subRepository...
 // This will save you from repeating common functions for each repository..

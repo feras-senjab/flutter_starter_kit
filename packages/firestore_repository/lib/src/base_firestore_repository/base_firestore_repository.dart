@@ -13,7 +13,7 @@ import 'query_helpers/query_helpers.dart';
 /// Constructor Parameters:
 /// - [fromMap] : Function to convert Firestore document data into a model instance.
 /// - [toMap] : Function to convert a model instance into Firestore document data.
-abstract class BaseRepository<T> {
+abstract class BaseFirestoreRepository<T> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Define the collection path in Firestore
@@ -23,7 +23,7 @@ abstract class BaseRepository<T> {
   final T Function(Map<String, dynamic> map) fromMap;
   final Map<String, dynamic> Function(T model) toMap;
 
-  BaseRepository({required this.fromMap, required this.toMap});
+  BaseFirestoreRepository({required this.fromMap, required this.toMap});
 
   /// Checks if a document exists by its ID.
   ///
