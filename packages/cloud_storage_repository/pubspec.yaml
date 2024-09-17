@@ -1,0 +1,12 @@
+name: cloud_storage_repository
+
+environment: 
+  sdk: ^3.5.1
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+
+dependencies:
+  firebase_storage:
+  firebase_core:
+  mime_type:
