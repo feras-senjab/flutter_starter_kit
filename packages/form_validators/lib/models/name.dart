@@ -5,7 +5,7 @@ enum NameValidationError { empty, invalid }
 class Name extends FormzInput<String, NameValidationError> {
   const Name.pure() : super.pure('');
 
-  const Name.dirty([String value = '']) : super.dirty(value);
+  const Name.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _nameRegExp = RegExp(
     r'^[\p{Ll}\p{Lu} ]{3,16}$',

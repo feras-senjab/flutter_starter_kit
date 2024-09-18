@@ -7,7 +7,7 @@ const String _kEmailPattern =
 
 class Email extends FormzInput<String, EmailValidationError> {
   const Email.pure() : super.pure('');
-  const Email.dirty([String value = '']) : super.dirty(value);
+  const Email.dirty([super.value = '']) : super.dirty();
 
   static final _regex = RegExp(_kEmailPattern);
 
