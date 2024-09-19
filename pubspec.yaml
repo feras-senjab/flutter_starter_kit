@@ -21,11 +21,13 @@ dependencies:
   flutter_spinkit: ^5.2.1
   form_validators:
     path: packages/form_validators
+  firebase_core:
   auth_repository:
     path: packages/auth_repository
   firestore_repository:
     path: packages/firestore_repository
-  firebase_core:
+  cloud_storage_repository:
+    path: packages/cloud_storage_repository
   cached_network_image: ^3.4.1
 
 dev_dependencies:
