@@ -8,13 +8,13 @@ enum ImageType {
 }
 
 /// Base class for representing different types of image sources.
-abstract class ImageSource {
-  const ImageSource();
+abstract class ImageModel {
+  const ImageModel();
 
-  // Factory constructors to create instances of ImageSource
-  const factory ImageSource.asset(String assetPath) = _AssetImageSource;
-  const factory ImageSource.network(String url) = _NetworkImageSource;
-  const factory ImageSource.file(File file) = _FileImageSource;
+  // Factory constructors to create instances of ImageModel
+  const factory ImageModel.asset(String assetPath) = _AssetImageModel;
+  const factory ImageModel.network(String url) = _NetworkImageModel;
+  const factory ImageModel.file(File file) = _FileImageModel;
 
   // Type checker to determine the source type
   ImageType get imageType;
@@ -26,9 +26,9 @@ abstract class ImageSource {
 }
 
 // Private subclass for asset images
-class _AssetImageSource extends ImageSource {
+class _AssetImageModel extends ImageModel {
   final String _path;
-  const _AssetImageSource(this._path);
+  const _AssetImageModel(this._path);
 
   @override
   ImageType get imageType => ImageType.asset;
@@ -38,9 +38,9 @@ class _AssetImageSource extends ImageSource {
 }
 
 // Private subclass for network images
-class _NetworkImageSource extends ImageSource {
+class _NetworkImageModel extends ImageModel {
   final String _url;
-  const _NetworkImageSource(this._url);
+  const _NetworkImageModel(this._url);
 
   @override
   ImageType get imageType => ImageType.network;
@@ -50,9 +50,9 @@ class _NetworkImageSource extends ImageSource {
 }
 
 // Private subclass for file-based images
-class _FileImageSource extends ImageSource {
+class _FileImageModel extends ImageModel {
   final File _file;
-  const _FileImageSource(this._file);
+  const _FileImageModel(this._file);
 
   @override
   ImageType get imageType => ImageType.file;

@@ -9,7 +9,7 @@ import 'package:flutter_starter_kit/Global/Models/image_source.dart';
 /// For network images it implements CachedNetworkImage and shows the appropriate ui for loading, error, and success.
 class CustomImage extends StatelessWidget {
   /// Pre-defined model to determine the source of the image (network, asset, or file).
-  final ImageSource imageSource;
+  final ImageModel imageModel;
 
   /// The size of the image to display (width and height).
   final Size size;
@@ -28,7 +28,7 @@ class CustomImage extends StatelessWidget {
 
   const CustomImage({
     super.key,
-    required this.imageSource,
+    required this.imageModel,
     required this.size,
     this.shape = BoxShape.rectangle,
     this.boxFit,
@@ -70,11 +70,11 @@ class CustomImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Switches between different image types (network, asset, file) based on the ImageSource.
-    switch (imageSource.imageType) {
+    // Switches between different image types (network, asset, file) based on the ImageModel.
+    switch (imageModel.imageType) {
       // Case for displaying a network image.
       case ImageType.network:
-        final url = imageSource.networkUrl;
+        final url = imageModel.networkUrl;
         return CachedNetworkImage(
           imageUrl: url!,
           imageBuilder: (context, imageProvider) {
@@ -105,7 +105,7 @@ class CustomImage extends StatelessWidget {
 
       // Case for displaying an asset image (from the local bundle).
       case ImageType.asset:
-        final assetPath = imageSource.assetPath;
+        final assetPath = imageModel.assetPath;
         return _preview(
           context,
           imageProvider: AssetImage(assetPath!),
@@ -113,7 +113,7 @@ class CustomImage extends StatelessWidget {
 
       // Case for displaying a file image (from the local file system).
       case ImageType.file:
-        final file = imageSource.file;
+        final file = imageModel.file;
         return _preview(
           context,
           imageProvider: FileImage(file!),

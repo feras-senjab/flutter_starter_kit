@@ -15,17 +15,17 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
               name: Name.dirty(userModelCubit.state.userModel!.name),
               about: userModelCubit.state.userModel!.about,
               avatar: userModelCubit.state.userModel!.avatarUrl == null
-                  ? const ImageSource.asset(AppAssets.userDefaultAvatar)
-                  : ImageSource.network(
+                  ? const ImageModel.asset(AppAssets.userDefaultAvatar)
+                  : ImageModel.network(
                       userModelCubit.state.userModel!.avatarUrl!)),
         );
 
   final UserModelCubit userModelCubit;
 
-  void avatarChanged(ImageSource imageSource) {
+  void avatarChanged(ImageModel imageModel) {
     emit(
       state.copyWith(
-        avatar: imageSource,
+        avatar: imageModel,
       ),
     );
   }

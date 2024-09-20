@@ -11,7 +11,7 @@ class EditUserProfileState extends Equatable {
 
   final Name name;
   final String? about;
-  final ImageSource avatar;
+  final ImageModel avatar;
   final FormzStatus status;
   final String? errorMessage;
 
@@ -29,7 +29,7 @@ class EditUserProfileState extends Equatable {
   EditUserProfileState copyWith({
     Name? name,
     String? about,
-    ImageSource? avatar,
+    ImageModel? avatar,
     FormzStatus? status,
     String? errorMessage,
   }) {

@@ -24,9 +24,9 @@ class PreviewUserProfileScreen extends StatelessWidget {
           children: [
             SizedBox(height: 2.h),
             CustomImage(
-              imageSource: userModel.avatarUrl == null
-                  ? const ImageSource.asset(AppAssets.userDefaultAvatar)
-                  : ImageSource.network(userModel.avatarUrl!),
+              imageModel: userModel.avatarUrl == null
+                  ? const ImageModel.asset(AppAssets.userDefaultAvatar)
+                  : ImageModel.network(userModel.avatarUrl!),
               size: Size(120.sp, 120.sp),
               boxFit: BoxFit.cover,
               shape: BoxShape.circle,

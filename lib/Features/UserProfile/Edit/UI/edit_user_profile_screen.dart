@@ -58,7 +58,7 @@ class EditUserProfileScreen extends StatelessWidget {
                     child: Stack(
                       children: [
                         CustomImage(
-                          imageSource: state.avatar,
+                          imageModel: state.avatar,
                           size: Size(120.sp, 120.sp),
                           shape: BoxShape.circle,
                         ),
