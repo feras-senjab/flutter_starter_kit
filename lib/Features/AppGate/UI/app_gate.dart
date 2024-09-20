@@ -36,7 +36,7 @@ class _AppGateState extends State<AppGate> {
       listener: (context, state) {
         if (state.stateStatus == StateStatus.success) {
           // Navigate to HomeScreen when data is loaded successfully
-          NavHelper.push(context, const HomeScreen());
+          NavHelper.pushAndRemoveUntil(context, const HomeScreen());
         } else if (state.stateStatus == StateStatus.failure) {
           // Handle fail loading data..
           // ! You can add here contact us option and/or send crush analytics.

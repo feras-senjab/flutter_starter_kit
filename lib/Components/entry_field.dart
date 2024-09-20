@@ -9,7 +9,9 @@ class EntryField extends StatelessWidget {
   final bool? readOnly;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final int? minLines;
   final int? maxLines;
+  final bool expands;
   final String? hint;
   final Widget? prefix;
   final Widget? suffixIcon;
@@ -41,7 +43,9 @@ class EntryField extends StatelessWidget {
     this.maxLength,
     this.hint,
     this.prefix,
+    this.minLines,
     this.maxLines,
+    this.expands = false,
     this.suffixIcon,
     this.onTap,
     this.textCapitalization,
@@ -81,9 +85,10 @@ class EntryField extends StatelessWidget {
         initialValue: initialValue,
         readOnly: readOnly ?? false,
         keyboardType: keyboardType,
-        minLines: 1,
+        minLines: minLines,
         maxLength: maxLength,
         maxLines: obscureText ? 1 : maxLines,
+        expands: expands,
         textAlign: textAlign ?? TextAlign.start,
         decoration: InputDecoration(
           fillColor: fillColor,

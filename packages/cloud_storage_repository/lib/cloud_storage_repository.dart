@@ -1,3 +1,3 @@
 library cloud_storage_repository;
 
-export 'package:cloud_storage_repository/cloud_storage_repository.dart';
+export 'src/repositories/cloud_storage_users_repository.dart';

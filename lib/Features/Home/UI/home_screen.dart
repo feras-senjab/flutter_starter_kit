@@ -2,7 +2,7 @@ import 'package:flutter_starter_kit/Components/custom_button.dart';
 import 'package:flutter_starter_kit/Features/Auth/Login/UI/login_screen.dart';
 import 'package:flutter_starter_kit/Features/Auth/Logout/cubit/logout_cubit.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
-import 'package:flutter_starter_kit/Features/UserProfile/Preview/UI/user_profile_preview_screen.dart';
+import 'package:flutter_starter_kit/Features/UserProfile/Preview/UI/preview_user_profile_screen.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/app_theme.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/cubit/theme_cubit.dart';
 import 'package:flutter_starter_kit/Global/enums.dart';
@@ -20,6 +20,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //---------------- UI Layout --------------------//
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,7 +63,7 @@ class HomeScreen extends StatelessWidget {
               child: CustomButton(
                 text: 'Profile',
                 onPressed: () =>
-                    NavHelper.push(context, const UserProfilePreviewScreen()),
+                    NavHelper.push(context, const PreviewUserProfileScreen()),
               ),
             ),
             Center(

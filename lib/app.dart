@@ -2,6 +2,7 @@ import 'package:auth_repository/auth_repository.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firestore_repository/firestore_repository.dart';
+import 'package:cloud_storage_repository/cloud_storage_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_kit/Config/simple_bloc_observer.dart';
@@ -43,6 +44,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<FirestoreUsersRepository>(
           create: (context) => FirestoreUsersRepository(),
+        ),
+        RepositoryProvider<CloudStorageUsersRepository>(
+          create: (context) => CloudStorageUsersRepository(),
         ),
       ],
       child: MultiBlocProvider(

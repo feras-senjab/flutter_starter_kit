@@ -18,9 +18,3 @@ enum StateStatus {
   failure,
   canceled,
 }
-
-enum ImageType {
-  assetImage,
-  networkImage,
-  // .. can add more if needed ..
-}
