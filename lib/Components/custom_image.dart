@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_kit/Components/custom_loading.dart';
-import 'package:flutter_starter_kit/Global/Models/image_source.dart';
+import 'package:flutter_starter_kit/Global/Models/image_model.dart';
 
 /// A versatile widget for displaying images from different sources (network, asset, or file).
 /// For network images it implements CachedNetworkImage and shows the appropriate ui for loading, error, and success.
