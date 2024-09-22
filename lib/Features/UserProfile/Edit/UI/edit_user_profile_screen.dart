@@ -5,22 +5,47 @@ import 'package:flutter_starter_kit/Components/custom_image.dart';
 import 'package:flutter_starter_kit/Components/entry_field.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Features/UserProfile/Edit/cubit/edit_user_profile_cubit.dart';
+import 'package:flutter_starter_kit/Global/Models/image_model.dart';
 import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
+import 'package:flutter_starter_kit/Helpers/image_pick_crop_helper.dart';
 import 'package:flutter_starter_kit/Helpers/loading_helper.dart';
 import 'package:form_validators/form_validators.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
+
+import 'widgets/edit_user_avatar_button.dart';
 
 class EditUserProfileScreen extends StatelessWidget {
   const EditUserProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    //---------------- Helper Method --------------------//
+    /// Picks and Crops an image from the specified source,
+    /// then updates the user's avatar in the EditUserProfileCubit.
+    Future pickCropAndSetUserAvatar(
+        BuildContext context, ImageSource imageSource) async {
+      final pickedCropped = await ImagePickCropHelper.pickAndCropImage(
+        pickSettings: ImagePickSettings(source: imageSource),
+        cropSettings: ImageCropSettings(cropStyle: CropStyle.circle),
+      );
+
+      if (pickedCropped != null && context.mounted) {
+        final imageModel = ImageModel.file(pickedCropped);
+        context.read<EditUserProfileCubit>().avatarChanged(imageModel);
+      }
+    }
+
+    //---------------- BlocProvider --------------------//
     return BlocProvider(
       create: (context) => EditUserProfileCubit(
         userModelCubit: context.read<UserModelCubit>(),
       ),
+      //---------------- BlocConsumer --------------------//
       child: BlocConsumer<EditUserProfileCubit, EditUserProfileState>(
         listenWhen: (previous, current) => previous.status != current.status,
+        //---------------- Listener --------------------//
         listener: (context, state) {
           if (state.status == FormzStatus.submissionInProgress) {
             LoadingHelper.showLoading(context);
@@ -38,6 +63,7 @@ class EditUserProfileScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          //---------------- UI Layout --------------------//
           return GestureDetector(
             // Keyboard Dismissal
             onTap: () {
@@ -53,7 +79,8 @@ class EditUserProfileScreen extends StatelessWidget {
                 ),
                 children: [
                   SizedBox(height: 2.h),
-                  // Avatar
+
+                  //---------------- Avatar --------------------//
                   Align(
                     child: Stack(
                       children: [
@@ -65,87 +92,50 @@ class EditUserProfileScreen extends StatelessWidget {
                         Positioned(
                           bottom: 0,
                           right: 0,
-                          child: CircleAvatar(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onPrimary,
-                            child: IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () {
-                                DialogHelper.showCustomDialog(
-                                  context: context,
-                                  dialog: Dialog(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 4.h,
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          // Remove Avatar
-                                          InkWell(
-                                            onTap: () {},
-                                            child: const ListTile(
-                                              title: Text(
-                                                'Remove your avatar',
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              trailing: Icon(Icons.delete),
-                                            ),
-                                          ),
-                                          // Choose from gallery
-                                          InkWell(
-                                            onTap: () {},
-                                            child: const ListTile(
-                                              title: Text(
-                                                'Choose from gallery',
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              trailing: Icon(
-                                                  Icons.file_upload_outlined),
-                                            ),
-                                          ),
-                                          // Take a picture
-                                          InkWell(
-                                            onTap: () {},
-                                            child: const ListTile(
-                                              title: Text(
-                                                'Take a picture',
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              trailing: Icon(Icons.camera_alt),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                          child: EditUserAvatarButton(
+                            // Remove Avatar
+                            onRemoveAvatarSelected: () {
+                              //TODO
+                            },
+                            // From Gallery
+                            onChooseFromGallerySelected: () =>
+                                pickCropAndSetUserAvatar(
+                                    context, ImageSource.gallery),
+                            // From Camera
+                            onTakePictureSelected: () =>
+                                pickCropAndSetUserAvatar(
+                                    context, ImageSource.camera),
                           ),
                         ),
                       ],
                     ),
                   ),
+
                   SizedBox(height: 2.h),
-                  // Name
+
+                  //---------------- Name --------------------//
                   EntryField(
                     label: 'Name',
                     initialValue: state.name.value,
                   ),
+
                   SizedBox(height: 2.h),
-                  // About
+
+                  //---------------- About --------------------//
                   EntryField(
                     label: 'About',
                     initialValue: state.about,
                     maxLines: 3,
                   ),
-                  // Submit
+
                   SizedBox(height: 2.h),
+
+                  //---------------- Submit --------------------//
                   CustomButton(
                     text: 'Submit',
-                    onPressed: () {},
+                    onPressed: () {
+                      //TODO
+                    },
                   ),
                 ],
               ),
