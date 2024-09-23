@@ -56,6 +56,18 @@ class ImageCropSettings {
   /// Whether to lock the aspect ratio
   final bool lockAspectRatio;
 
+  /// Max width to resize after crop
+  final int? maxWidth;
+
+  /// Max height to resize after crop
+  final int? maxHeight;
+
+  /// Image compress format after crop
+  final ImageCompressFormat compressFormat;
+
+  /// Image compress quality after crop
+  final int compressQuality;
+
   ImageCropSettings({
     required this.cropStyle,
     this.aspectRatio = const CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -63,6 +75,10 @@ class ImageCropSettings {
     this.toolbarColor,
     this.toolbarWidgetColor,
     this.lockAspectRatio = true,
+    this.maxWidth,
+    this.maxHeight,
+    this.compressFormat = ImageCompressFormat.jpg,
+    this.compressQuality = 90,
   });
 }
 
@@ -101,6 +117,10 @@ class ImagePickCropHelper {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: sourcePath,
       aspectRatio: cropSettings.aspectRatio,
+      maxWidth: cropSettings.maxWidth,
+      maxHeight: cropSettings.maxHeight,
+      compressFormat: cropSettings.compressFormat,
+      compressQuality: cropSettings.compressQuality,
       uiSettings: [
         AndroidUiSettings(
           cropStyle: cropSettings.cropStyle,

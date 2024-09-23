@@ -13,6 +13,7 @@ import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/app_theme.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/cubit/theme_cubit.dart';
+import 'package:flutter_starter_kit/Global/app_values.dart';
 import 'package:flutter_starter_kit/Global/enums.dart';
 import 'package:sizer/sizer.dart';
 
@@ -84,7 +85,7 @@ class App extends StatelessWidget {
                     builder: (context, state) {
                       return MaterialApp(
                         debugShowCheckedModeBanner: flavor == Flavor.dev,
-                        title: 'Flutter Starter Code',
+                        title: AppValues.appTitle,
                         theme: state.appTheme.themeData,
                         home: BlocBuilder<AuthBloc, AuthState>(
                           // Rebuild the UI only when the auth state transitions from 'unknown' to a known state.

@@ -6,6 +6,7 @@ import 'package:flutter_starter_kit/Components/entry_field.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Features/UserProfile/Edit/cubit/edit_user_profile_cubit.dart';
 import 'package:flutter_starter_kit/Global/Models/image_model.dart';
+import 'package:flutter_starter_kit/Global/app_values.dart';
 import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
 import 'package:flutter_starter_kit/Helpers/image_pick_crop_helper.dart';
 import 'package:flutter_starter_kit/Helpers/loading_helper.dart';
@@ -28,7 +29,12 @@ class EditUserProfileScreen extends StatelessWidget {
         BuildContext context, ImageSource imageSource) async {
       final pickedCropped = await ImagePickCropHelper.pickAndCropImage(
         pickSettings: ImagePickSettings(source: imageSource),
-        cropSettings: ImageCropSettings(cropStyle: CropStyle.circle),
+        cropSettings: ImageCropSettings(
+          cropStyle: CropStyle.circle,
+          maxWidth: AppValues.userAvatarMaxWidth,
+          maxHeight: AppValues.userAvatarMaxHeight,
+          compressQuality: AppValues.userAvatarQuality,
+        ),
       );
 
       if (pickedCropped != null && context.mounted) {
