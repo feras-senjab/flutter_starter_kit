@@ -9,6 +9,8 @@ class EntryField extends StatelessWidget {
   final bool? readOnly;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final bool showCounter;
+  final TextStyle? counterTextStyle;
   final int? minLines;
   final int? maxLines;
   final bool expands;
@@ -19,7 +21,6 @@ class EntryField extends StatelessWidget {
   final TextCapitalization? textCapitalization;
   final Color? fillColor;
   final EdgeInsets? padding;
-  final Widget? counter;
   final TextStyle? hintStyle;
   final TextStyle? errorStyle;
   final InputBorder? inputBorder;
@@ -41,6 +42,8 @@ class EntryField extends StatelessWidget {
     this.readOnly,
     this.keyboardType,
     this.maxLength,
+    this.showCounter = true,
+    this.counterTextStyle,
     this.hint,
     this.prefix,
     this.minLines,
@@ -51,7 +54,6 @@ class EntryField extends StatelessWidget {
     this.textCapitalization,
     this.fillColor,
     this.padding,
-    this.counter,
     this.hintStyle,
     this.errorStyle,
     this.inputBorder,
@@ -85,8 +87,8 @@ class EntryField extends StatelessWidget {
         initialValue: initialValue,
         readOnly: readOnly ?? false,
         keyboardType: keyboardType,
-        minLines: minLines,
         maxLength: maxLength,
+        minLines: minLines,
         maxLines: obscureText ? 1 : maxLines,
         expands: expands,
         textAlign: textAlign ?? TextAlign.start,
@@ -94,6 +96,8 @@ class EntryField extends StatelessWidget {
           fillColor: fillColor,
           prefixIcon: prefix,
           suffixIcon: suffixIcon,
+          counterText: showCounter ? null : '',
+          counterStyle: counterTextStyle,
           labelText: label,
           labelStyle: labelColor == null
               ? null
@@ -105,7 +109,6 @@ class EntryField extends StatelessWidget {
           errorText: errorText,
           errorStyle: errorStyle,
           errorMaxLines: 3,
-          counter: counter ?? const Offstage(),
           border: inputBorder,
           enabledBorder: enabledBorder,
           focusedBorder: focusedBorder,

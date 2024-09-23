@@ -13,6 +13,7 @@ import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/app_theme.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/cubit/theme_cubit.dart';
+import 'package:flutter_starter_kit/Global/app_preferences_keys.dart';
 import 'package:flutter_starter_kit/Global/app_values.dart';
 import 'package:flutter_starter_kit/Global/enums.dart';
 import 'package:sizer/sizer.dart';
@@ -53,7 +54,8 @@ class App extends StatelessWidget {
       child: MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => ThemeCubit(themePreferenceKey: 'theme'),
+              create: (context) =>
+                  ThemeCubit(themePreferenceKey: AppPreferencesKeys.theme),
             ),
             BlocProvider(
               create: (BuildContext context) => AuthBloc(

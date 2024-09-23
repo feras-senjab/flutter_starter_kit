@@ -132,6 +132,7 @@ class EditUserProfileScreen extends StatelessWidget {
                     label: 'About',
                     initialValue: state.about,
                     maxLines: 3,
+                    maxLength: AppValues.userAboutMaxLength,
                   ),
 
                   SizedBox(height: 2.h),
