@@ -16,7 +16,7 @@ import 'query_helpers/query_helpers.dart';
 abstract class BaseFirestoreRepository<T> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Define the collection path in Firestore
+  /// Define the collection path in Firestore.
   String get collectionPath;
 
   // Functions to convert between model and map
@@ -32,16 +32,15 @@ abstract class BaseFirestoreRepository<T> {
   ///
   /// Returns:
   /// - A `Future` that resolves to `true` if the document exists, `false` otherwise.
+  ///
   /// Throws:
   /// - An `Exception` if the operation fails.
-  Future<bool> isExisted({
-    required String id,
-  }) async {
+  Future<bool> isExisted({required String id}) async {
     try {
       final doc = await _firestore.collection(collectionPath).doc(id).get();
       return doc.exists;
     } catch (e) {
-      throw Exception('Failed to check if document is existed: $e');
+      throw Exception('Failed to check if document exists: $e');
     }
   }
 
@@ -56,17 +55,17 @@ abstract class BaseFirestoreRepository<T> {
   /// - A `Future` that resolves to the document ID.
   ///
   /// Throws:
-  /// - An `Exception` if [id] passed, [replaceExistedDoc] set to false, and a document is existed.
+  /// - An `Exception` if [id] is provided, [replaceExistedDoc] is set to false, and a document with the same ID exists.
   /// - An `Exception` if the operation fails.
   Future<String> create({
     required T model,
     String? id,
     bool replaceExistedDoc = false,
   }) async {
-    // Process existed doc..
+    // Check for existing document
     if (id != null && await isExisted(id: id)) {
       if (!replaceExistedDoc) {
-        throw Exception('There is an existed document with the same Id!');
+        throw Exception('A document with the same ID already exists!');
       }
     }
 
@@ -83,22 +82,125 @@ abstract class BaseFirestoreRepository<T> {
     }
   }
 
-  /// Updates a document with the given ID.
+  /// Private helper to detect and return only the fields that have changed between two models.
+  ///
+  /// Compares the old model and new model and returns a map of the changed fields.
+  ///
+  /// Parameters:
+  /// - [oldModel] : The original model instance before any updates.
+  /// - [newModel] : The updated model instance that may contain new data.
+  ///
+  /// Returns:
+  /// - A `Map<String, dynamic>` representing the fields that have been updated
+  ///   from the old model to the new model.
+  Map<String, dynamic> _getChangedFields({
+    required T oldModel,
+    required T newModel,
+  }) {
+    final oldModelMap = toMap(oldModel);
+    final newModelMap = toMap(newModel);
+    final changes = <String, dynamic>{};
+
+    // Loop through the keys in the new model map
+    newModelMap.forEach((key, newValue) {
+      final oldValue = oldModelMap[key];
+      // If the values are different, add to the changes map
+      if (newValue != oldValue) {
+        changes[key] = newValue;
+      }
+    });
+
+    return changes;
+  }
+
+  /// Updates the entire document in Firestore with the given model.
+  ///
+  /// Warning: This operation writes all fields, which can increase Firestore costs.
+  /// Use this method only when all (or most of) fields need to be updated.
   ///
   /// Parameters:
   /// - [id] : The document ID to update.
-  /// - [model] : The model instance with updated data.
+  /// - [model] : The model instance with the updated data.
   ///
   /// Throws:
   /// - An `Exception` if the operation fails.
-  Future<void> update({
+  Future<void> updateFullDocument({
     required String id,
     required T model,
   }) async {
     try {
-      await _firestore.collection(collectionPath).doc(id).update(toMap(model));
+      await _firestore
+          .collection(collectionPath)
+          .doc(id)
+          .update(toMap(model)); // Update only specified fields
     } catch (e) {
-      throw Exception('Failed to update document: $e');
+      throw Exception('Failed to update the full document: $e');
+    }
+  }
+
+  /// Updates only the fields that have changed between the old and new models.
+  /// The method minimizes write costs in Firestore.
+  ///
+  /// Warning: The comparison requires extra computation to detect changes, but minimizes write costs in Firestore.
+  ///
+  /// Warning: This method compares each field to detect changes, which can be computationally
+  /// expensive if the model has a large number of fields or deeply nested data.
+  ///
+  /// Parameters:
+  /// - [id] : The document ID to update.
+  /// - [oldModel] : The original model instance before updates.
+  /// - [newModel] : The updated model instance containing new data.
+  ///
+  /// Throws:
+  /// - An `Exception` if the operation fails.
+  Future<void> updateChangedFields({
+    required String id,
+    required T oldModel,
+    required T newModel,
+  }) async {
+    try {
+      // Get only the updated fields using the private helper
+      final updatedFields = _getChangedFields(
+        oldModel: oldModel,
+        newModel: newModel,
+      );
+
+      // Update Firestore only if there are changes
+      if (updatedFields.isNotEmpty) {
+        await _firestore
+            .collection(collectionPath)
+            .doc(id)
+            .update(updatedFields);
+      }
+    } catch (e) {
+      throw Exception('Failed to update document\'s changed fields: $e');
+    }
+  }
+
+  /// Updates specific fields using the provided map of field-value pairs.
+  /// This method minimizes write costs in Firestore and doesn't require extra computation.
+  ///
+  ///
+  /// Warning: Be careful with spelling and key names, as Firestore will not validate them.
+  /// Ensure that the map only contains the correct fields and values.
+  ///
+  /// Parameters:
+  /// - [id] : The document ID to update.
+  /// - [fields] : A `Map<String, dynamic>` of the fields and their new values to update.
+  ///
+  /// Throws:
+  /// - An `Exception` if the operation fails.
+  Future<void> updateFieldsFromMap({
+    required String id,
+    required Map<String, dynamic> fields,
+  }) async {
+    try {
+      await _firestore
+          .collection(collectionPath)
+          .doc(id)
+          .update(fields); // Update the fields in the document
+    } catch (e) {
+      throw Exception('Failed to update fields: $e');
     }
   }
 
@@ -109,9 +211,7 @@ abstract class BaseFirestoreRepository<T> {
   ///
   /// Throws:
   /// - An `Exception` if the operation fails.
-  Future<void> delete({
-    required String id,
-  }) async {
+  Future<void> delete({required String id}) async {
     try {
       await _firestore.collection(collectionPath).doc(id).delete();
     } catch (e) {
@@ -129,9 +229,7 @@ abstract class BaseFirestoreRepository<T> {
   ///
   /// Throws:
   /// - An `Exception` if the query fails.
-  Future<T?> getById({
-    required String id,
-  }) async {
+  Future<T?> getById({required String id}) async {
     try {
       final doc = await _firestore.collection(collectionPath).doc(id).get();
       return doc.exists ? fromMap(doc.data()!) : null;
@@ -180,9 +278,12 @@ abstract class BaseFirestoreRepository<T> {
             .collection(collectionPath)
             .limit(pagination.calculateStartAfter())
             .get()
-            .then((snapshot) => snapshot.docs.last);
+            .then((snapshot) =>
+                snapshot.docs.isNotEmpty ? snapshot.docs.last : null);
 
-        query = query.startAfterDocument(startAfterDoc);
+        if (startAfterDoc != null) {
+          query = query.startAfterDocument(startAfterDoc);
+        }
         query = query.limit(pagination.pageSize);
       }
 

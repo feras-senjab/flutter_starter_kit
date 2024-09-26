@@ -1,3 +1,5 @@
+import 'package:cloud_storage_repository/cloud_storage_repository.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_kit/Components/custom_button.dart';
@@ -47,6 +49,8 @@ class EditUserProfileScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => EditUserProfileCubit(
         userModelCubit: context.read<UserModelCubit>(),
+        usersRepository: context.read<FirestoreUsersRepository>(),
+        usersStorageRepository: context.read<CloudStorageUsersRepository>(),
       ),
       //---------------- BlocConsumer --------------------//
       child: BlocConsumer<EditUserProfileCubit, EditUserProfileState>(
@@ -123,6 +127,12 @@ class EditUserProfileScreen extends StatelessWidget {
                   EntryField(
                     label: 'Name',
                     initialValue: state.name.value,
+                    keyboardType: TextInputType.name,
+                    onChanged: (name) =>
+                        context.read<EditUserProfileCubit>().nameChanged(name),
+                    errorText: state.name.invalid
+                        ? Name.showNameErrorMessage(state.name.error)
+                        : null,
                   ),
 
                   SizedBox(height: 2.h),
@@ -133,6 +143,8 @@ class EditUserProfileScreen extends StatelessWidget {
                     initialValue: state.about,
                     maxLines: 3,
                     maxLength: AppValues.userAboutMaxLength,
+                    onChanged: (text) =>
+                        context.read<EditUserProfileCubit>().aboutChanged(text),
                   ),
 
                   SizedBox(height: 2.h),

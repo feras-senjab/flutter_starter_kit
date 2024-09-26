@@ -1,4 +1,6 @@
+import 'package:cloud_storage_repository/cloud_storage_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_kit/Global/Models/image_model.dart';
@@ -10,6 +12,8 @@ part 'edit_user_profile_state.dart';
 class EditUserProfileCubit extends Cubit<EditUserProfileState> {
   EditUserProfileCubit({
     required this.userModelCubit,
+    required this.usersRepository,
+    required this.usersStorageRepository,
   }) : super(
           EditUserProfileState(
               name: Name.dirty(userModelCubit.state.userModel!.name),
@@ -21,6 +25,8 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
         );
 
   final UserModelCubit userModelCubit;
+  final FirestoreUsersRepository usersRepository;
+  final CloudStorageUsersRepository usersStorageRepository;
 
   void avatarChanged(ImageModel imageModel) {
     emit(
@@ -42,11 +48,57 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
   }
 
   void aboutChanged(String value) {
-    // TODO.. decision (make formz!!)
     emit(
       state.copyWith(
         about: value,
       ),
     );
+  }
+
+  void submit() async {
+    if (!state.status.isValidated) return;
+    //TODO handle empty about
+
+    //
+    //final String userId = userModelCubit.state.userModel!.id;
+    final FirestoreUserModel currentUserModel = userModelCubit.state.userModel!;
+    final String cloudAvatarPath;
+    try {
+      if (state.avatar.imageType == ImageType.file &&
+          state.avatar.file != null) {
+        cloudAvatarPath = await usersStorageRepository.uploadUserAvatar(
+          userId: currentUserModel.id,
+          file: state.avatar.file!,
+        );
+      }
+    } catch (error) {
+      if (error is CloudStorageFileException) {
+        emit(
+          state.copyWith(
+            status: FormzStatus.submissionFailure,
+            errorMessage: error.message,
+          ),
+        );
+      } else {
+        state.copyWith(
+          status: FormzStatus.submissionFailure,
+          errorMessage: 'Submission failed due to issue with uploading avatar!',
+        );
+      }
+
+      return;
+    }
+
+    //! del me
+
+    //!
+
+    // usersRepository.update(
+    //   id: currentUserModel.id,
+    //   oldModel: currentUserModel,
+    //   newModel: currentUserModel.copyWith(
+    //     name: state.name.value,
+    //   ),
+    // );
   }
 }

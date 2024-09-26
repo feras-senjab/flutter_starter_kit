@@ -1,5 +1,5 @@
 import 'package:cloud_storage_repository/config.dart';
-import 'package:cloud_storage_repository/src/exceptions/cloud_storage_exception.dart';
+import 'package:cloud_storage_repository/src/exceptions/platform_exception.dart';
 import 'package:cloud_storage_repository/src/exceptions/file_exception.dart';
 import 'package:cloud_storage_repository/src/helpers/file_helper.dart';
 
@@ -13,21 +13,22 @@ class CloudStorageUsersRepository {
 
   /// Uploads a user avatar to Firebase Storage after validating the file type and size.
   ///
-  /// Throws [FileException] if the file type is not an image or if the file size exceeds the allowed limit.
+  /// Throws [CloudStorageFileException] if the file type is not an image or if the file size exceeds the allowed limit.
   ///
-  /// Throws [CloudStorageException] if there is an error during the upload process.
+  /// Throws [CloudStoragePlatformException] if there is an error during the upload process.
   Future<String> uploadUserAvatar({
     required String userId,
     required File file,
   }) async {
     // Check if the file is an image
     if (!FileHelper.isImageFile(file)) {
-      throw FileException('Invalid file type! Only images are accepted.');
+      throw CloudStorageFileException(
+          'Invalid file type! Only images are accepted.');
     }
 
     // Check if the file size is within the accepted limit
     if (!FileHelper.isFileSizeAccepted(file, Config.userAvatarMaxFileSize)) {
-      throw FileException(
+      throw CloudStorageFileException(
         'File size exceeds the maximum allowed limit of ${FileHelper.formatBytes(Config.userAvatarMaxFileSize)}.',
       );
     }
@@ -37,7 +38,7 @@ class CloudStorageUsersRepository {
       // Attempt to upload the file and retrieve the download URL
       final resultUrl = await _service.uploadFile(path, file);
       return resultUrl;
-    } on CloudStorageException {
+    } on CloudStoragePlatformException {
       // The exception is rethrown without additional handling.
       // This is just to indicate it's expected to be handled by the caller.
       rethrow;
@@ -46,7 +47,7 @@ class CloudStorageUsersRepository {
 
   /// Deletes a user's avatar from Firebase Storage.
   ///
-  /// Throws [CloudStorageException] if there is an error during the deletion process.
+  /// Throws [CloudStoragePlatformException] if there is an error during the deletion process.
   Future<void> deleteUserAvatar({
     required String userId,
   }) async {
@@ -54,7 +55,7 @@ class CloudStorageUsersRepository {
     try {
       // Attempt to delete the file from Firebase Storage
       await _service.deleteFile(path);
-    } on CloudStorageException {
+    } on CloudStoragePlatformException {
       // The exception is rethrown without additional handling.
       // This is just to indicate it's expected to be handled by the caller.
       rethrow;

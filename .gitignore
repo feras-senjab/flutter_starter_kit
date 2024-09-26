@@ -45,3 +45,6 @@ app.*.map.json
 # Firebase configuration files
 google-services.json
 GoogleService-Info.plist
+
+# Some Testing files
+_MyTests

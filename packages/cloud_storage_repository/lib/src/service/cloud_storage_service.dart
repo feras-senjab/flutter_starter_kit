@@ -1,7 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
-import '../exceptions/cloud_storage_exception.dart';
+import '../exceptions/platform_exception.dart';
 
 /// Manages low-level interactions with Firebase Storage,
 /// such as uploading, downloading, and deleting files, while handling storage-specific exceptions.
@@ -18,7 +18,7 @@ class CloudStorageService {
       final downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      throw CloudStorageException('Failed to upload file: $e');
+      throw CloudStoragePlatformException('Failed to upload file: $e');
     }
   }
 
@@ -30,7 +30,7 @@ class CloudStorageService {
       await ref.writeToFile(file);
       return file;
     } catch (e) {
-      throw CloudStorageException('Failed to download file: $e');
+      throw CloudStoragePlatformException('Failed to download file: $e');
     }
   }
 
@@ -40,7 +40,7 @@ class CloudStorageService {
       final ref = _firebaseStorage.ref().child(path);
       await ref.delete();
     } catch (e) {
-      throw CloudStorageException('Failed to delete file: $e');
+      throw CloudStoragePlatformException('Failed to delete file: $e');
     }
   }
 }
