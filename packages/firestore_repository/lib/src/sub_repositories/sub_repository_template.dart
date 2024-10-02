@@ -8,6 +8,7 @@ import '../../../config.dart';
 
 import '../base_firestore_repository/base_firestore_repository.dart';
 
+import '../firestore_helpers/firestore_field_updater.dart';
 import '../models/models.dart';
 
 //------------------------------------------------------------------------------//
@@ -47,6 +48,18 @@ class _SubModel extends Equatable {
       'value1': value1,
       'value2': value2,
     };
+  }
+
+  Map<String, dynamic> toUpdateMap({
+    FirestoreFieldUpdater<String>? value1,
+    FirestoreFieldUpdater<String>? value2,
+  }) {
+    Map<String, dynamic> updateMap = {};
+
+    if (value1 != null) updateMap['value1'] = value1.fieldValue;
+    if (value2 != null) updateMap['value2'] = value2.fieldValue;
+
+    return updateMap;
   }
 
   factory _SubModel.fromMap(Map<String, dynamic> map) {

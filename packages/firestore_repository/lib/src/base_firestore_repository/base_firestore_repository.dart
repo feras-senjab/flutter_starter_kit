@@ -82,37 +82,6 @@ abstract class BaseFirestoreRepository<T> {
     }
   }
 
-  /// Private helper to detect and return only the fields that have changed between two models.
-  ///
-  /// Compares the old model and new model and returns a map of the changed fields.
-  ///
-  /// Parameters:
-  /// - [oldModel] : The original model instance before any updates.
-  /// - [newModel] : The updated model instance that may contain new data.
-  ///
-  /// Returns:
-  /// - A `Map<String, dynamic>` representing the fields that have been updated
-  ///   from the old model to the new model.
-  Map<String, dynamic> _getChangedFields({
-    required T oldModel,
-    required T newModel,
-  }) {
-    final oldModelMap = toMap(oldModel);
-    final newModelMap = toMap(newModel);
-    final changes = <String, dynamic>{};
-
-    // Loop through the keys in the new model map
-    newModelMap.forEach((key, newValue) {
-      final oldValue = oldModelMap[key];
-      // If the values are different, add to the changes map
-      if (newValue != oldValue) {
-        changes[key] = newValue;
-      }
-    });
-
-    return changes;
-  }
-
   /// Updates the entire document in Firestore with the given model.
   ///
   /// Warning: This operation writes all fields, which can increase Firestore costs.
@@ -138,47 +107,8 @@ abstract class BaseFirestoreRepository<T> {
     }
   }
 
-  /// Updates only the fields that have changed between the old and new models.
-  /// The method minimizes write costs in Firestore.
-  ///
-  /// Warning: The comparison requires extra computation to detect changes, but minimizes write costs in Firestore.
-  ///
-  /// Warning: This method compares each field to detect changes, which can be computationally
-  /// expensive if the model has a large number of fields or deeply nested data.
-  ///
-  /// Parameters:
-  /// - [id] : The document ID to update.
-  /// - [oldModel] : The original model instance before updates.
-  /// - [newModel] : The updated model instance containing new data.
-  ///
-  /// Throws:
-  /// - An `Exception` if the operation fails.
-  Future<void> updateChangedFields({
-    required String id,
-    required T oldModel,
-    required T newModel,
-  }) async {
-    try {
-      // Get only the updated fields using the private helper
-      final updatedFields = _getChangedFields(
-        oldModel: oldModel,
-        newModel: newModel,
-      );
-
-      // Update Firestore only if there are changes
-      if (updatedFields.isNotEmpty) {
-        await _firestore
-            .collection(collectionPath)
-            .doc(id)
-            .update(updatedFields);
-      }
-    } catch (e) {
-      throw Exception('Failed to update document\'s changed fields: $e');
-    }
-  }
-
   /// Updates specific fields using the provided map of field-value pairs.
-  /// This method minimizes write costs in Firestore and doesn't require extra computation.
+  /// This method minimizes write costs in Firestore.
   ///
   ///
   /// Warning: Be careful with spelling and key names, as Firestore will not validate them.
@@ -186,19 +116,20 @@ abstract class BaseFirestoreRepository<T> {
   ///
   /// Parameters:
   /// - [id] : The document ID to update.
-  /// - [fields] : A `Map<String, dynamic>` of the fields and their new values to update.
+  /// - [updateMap] : A `Map<String, dynamic>` of the fields and their new values to update.
   ///
   /// Throws:
   /// - An `Exception` if the operation fails.
   Future<void> updateFieldsFromMap({
     required String id,
-    required Map<String, dynamic> fields,
+    required Map<String, dynamic> updateMap,
   }) async {
+    if (updateMap.isEmpty) return;
     try {
       await _firestore
           .collection(collectionPath)
           .doc(id)
-          .update(fields); // Update the fields in the document
+          .update(updateMap); // Update the fields in the document
     } catch (e) {
       throw Exception('Failed to update fields: $e');
     }

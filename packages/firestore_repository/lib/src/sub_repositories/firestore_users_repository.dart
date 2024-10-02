@@ -15,4 +15,6 @@ class FirestoreUsersRepository
 
   @override
   String get collectionPath => Config.usersCollection;
+
+  // Additional methods specific to user management can go here
 }

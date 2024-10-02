@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
+import '../firestore_helpers/firestore_field_updater.dart';
+
 class FirestoreUserModel extends Equatable {
   final String id;
   final String name;
@@ -43,6 +45,27 @@ class FirestoreUserModel extends Equatable {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       about: about ?? this.about,
     );
+  }
+
+  /// Creates a map of updates for Firestore fields based on the provided FirestoreFieldUpdater instances.
+  ///
+  /// The method allows selective updates while ensuring that only modified fields are included in the map.
+  Map<String, dynamic> toUpdateMap({
+    FirestoreFieldUpdater<String>? id,
+    FirestoreFieldUpdater<String>? name,
+    FirestoreFieldUpdater<String>? email,
+    FirestoreFieldUpdater<String>? avatarUrl,
+    FirestoreFieldUpdater<String>? about,
+  }) {
+    final Map<String, dynamic> updateMap = {};
+
+    if (id != null) updateMap['id'] = id.fieldValue;
+    if (name != null) updateMap['name'] = name.fieldValue;
+    if (email != null) updateMap['email'] = email.fieldValue;
+    if (avatarUrl != null) updateMap['avatarUrl'] = avatarUrl.fieldValue;
+    if (about != null) updateMap['about'] = about.fieldValue;
+
+    return updateMap;
   }
 
   Map<String, dynamic> toMap() {
