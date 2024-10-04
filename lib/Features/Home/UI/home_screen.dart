@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             SizedBox(height: 5.h),
             Text(
-              'Welcome ${context.read<UserModelCubit>().state.userModel!.name}',
+              'Welcome ${context.watch<UserModelCubit>().state.userModel!.name}',
             ),
             SizedBox(height: 5.h),
             Row(
@@ -93,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                     width: 30.w,
                     onPressed: () {
                       context.read<LogoutCubit>().logout();
-                      //! Navigation is done by listener.
+                      //! Loading & Navigation are done by listener.
                     },
                   );
                 },

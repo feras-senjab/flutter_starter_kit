@@ -125,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                         width: 50.w,
                         text: 'Sign in',
                         onPressed: () {
-                          //! Navigation is done by listener..
+                          //! Loading & Navigation are done by listener..
                           state.status.isValidated
                               ? context
                                   .read<LoginCubit>()
@@ -144,7 +144,7 @@ class LoginScreen extends StatelessWidget {
                         width: 50.w,
                         text: 'Google sign in',
                         onPressed: () {
-                          //! Navigation is done by listener..
+                          //! Loading & Navigation are done by listener..
                           context.read<LoginCubit>().signInWithGoogle();
                         },
                       ),

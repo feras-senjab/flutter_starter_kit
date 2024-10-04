@@ -3,12 +3,14 @@ import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
 import 'package:sizer/sizer.dart';
 
 class EditUserAvatarButton extends StatelessWidget {
+  final bool showRemoveAvatarOption;
   final Function onRemoveAvatarSelected;
   final Function onChooseFromGallerySelected;
   final Function onTakePictureSelected;
 
   const EditUserAvatarButton({
     super.key,
+    required this.showRemoveAvatarOption,
     required this.onRemoveAvatarSelected,
     required this.onChooseFromGallerySelected,
     required this.onTakePictureSelected,
@@ -33,17 +35,20 @@ class EditUserAvatarButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Remove Avatar
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        onRemoveAvatarSelected();
-                      },
-                      child: const ListTile(
-                        title: Text(
-                          'Remove your avatar',
-                          textAlign: TextAlign.center,
+                    Visibility(
+                      visible: showRemoveAvatarOption,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          onRemoveAvatarSelected();
+                        },
+                        child: const ListTile(
+                          title: Text(
+                            'Remove your avatar',
+                            textAlign: TextAlign.center,
+                          ),
+                          trailing: Icon(Icons.delete),
                         ),
-                        trailing: Icon(Icons.delete),
                       ),
                     ),
                     // Choose from gallery

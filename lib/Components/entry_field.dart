@@ -5,7 +5,6 @@ class EntryField extends StatelessWidget {
   final TextEditingController? controller;
   final String? label;
   final Color? labelColor;
-  final String? initialValue;
   final bool? readOnly;
   final TextInputType? keyboardType;
   final int? maxLength;
@@ -38,7 +37,6 @@ class EntryField extends StatelessWidget {
     this.controller,
     this.label,
     this.labelColor,
-    this.initialValue,
     this.readOnly,
     this.keyboardType,
     this.maxLength,
@@ -84,7 +82,6 @@ class EntryField extends StatelessWidget {
         onTap: onTap as void Function()?,
         autofocus: false,
         controller: controller,
-        initialValue: initialValue,
         readOnly: readOnly ?? false,
         keyboardType: keyboardType,
         maxLength: maxLength,

@@ -59,11 +59,21 @@ class FirestoreUserModel extends Equatable {
   }) {
     final Map<String, dynamic> updateMap = {};
 
-    if (id != null) updateMap['id'] = id.fieldValue;
-    if (name != null) updateMap['name'] = name.fieldValue;
-    if (email != null) updateMap['email'] = email.fieldValue;
-    if (avatarUrl != null) updateMap['avatarUrl'] = avatarUrl.fieldValue;
-    if (about != null) updateMap['about'] = about.fieldValue;
+    if (id != null && id.fieldValue != this.id) {
+      updateMap['id'] = id.fieldValue;
+    }
+    if (name != null && name.fieldValue != this.name) {
+      updateMap['name'] = name.fieldValue;
+    }
+    if (email != null && email.fieldValue != this.email) {
+      updateMap['email'] = email.fieldValue;
+    }
+    if (avatarUrl != null && avatarUrl.fieldValue != this.avatarUrl) {
+      updateMap['avatarUrl'] = avatarUrl.fieldValue;
+    }
+    if (about != null && about.fieldValue != this.about) {
+      updateMap['about'] = about.fieldValue;
+    }
 
     return updateMap;
   }

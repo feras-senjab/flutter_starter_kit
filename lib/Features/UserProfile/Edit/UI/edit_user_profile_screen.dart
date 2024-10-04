@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_storage_repository/cloud_storage_repository.dart';
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_starter_kit/Components/entry_field.dart';
 import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Features/UserProfile/Edit/cubit/edit_user_profile_cubit.dart';
 import 'package:flutter_starter_kit/Global/Models/image_model.dart';
+import 'package:flutter_starter_kit/Global/app_assets.dart';
 import 'package:flutter_starter_kit/Global/app_values.dart';
 import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
 import 'package:flutter_starter_kit/Helpers/image_pick_crop_helper.dart';
@@ -19,8 +22,31 @@ import 'package:sizer/sizer.dart';
 
 import 'widgets/edit_user_avatar_button.dart';
 
-class EditUserProfileScreen extends StatelessWidget {
+class EditUserProfileScreen extends StatefulWidget {
   const EditUserProfileScreen({super.key});
+
+  @override
+  State<EditUserProfileScreen> createState() => _EditUserProfileScreenState();
+}
+
+class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _aboutController = TextEditingController();
+
+  @override
+  void initState() {
+    final userModel = context.read<UserModelCubit>().state.userModel!;
+    _nameController.text = userModel.name;
+    _aboutController.text = userModel.about ?? '';
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _aboutController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,27 +74,40 @@ class EditUserProfileScreen extends StatelessWidget {
     //---------------- BlocProvider --------------------//
     return BlocProvider(
       create: (context) => EditUserProfileCubit(
-        userModelCubit: context.read<UserModelCubit>(),
+        userModel: context.read<UserModelCubit>().state.userModel!,
         usersRepository: context.read<FirestoreUsersRepository>(),
         usersStorageRepository: context.read<CloudStorageUsersRepository>(),
+        emptyAvatarImageModel:
+            const ImageModel.asset(AppAssets.userDefaultAvatar),
       ),
       //---------------- BlocConsumer --------------------//
       child: BlocConsumer<EditUserProfileCubit, EditUserProfileState>(
         listenWhen: (previous, current) => previous.status != current.status,
         //---------------- Listener --------------------//
         listener: (context, state) {
+          // 🔄 On reset to initial state:
+          if (state.status == FormzStatus.pure) {
+            _nameController.text = state.name.value;
+            _aboutController.text = state.about ?? '';
+          }
+          // ⏳ On Loading:
           if (state.status == FormzStatus.submissionInProgress) {
             LoadingHelper.showLoading(context);
           } else {
             LoadingHelper.dismissLoading();
+            // ❌ On Failure:
             if (state.status == FormzStatus.submissionFailure) {
               DialogHelper.showCustomAlert(
                 context: context,
                 title: 'Error',
                 content: state.errorMessage ?? 'Something Wrong!',
               );
-            } else if (state.status == FormzStatus.submissionSuccess) {
-              Navigator.of(context).pop();
+            }
+            // ✅ On Success:
+            else if (state.status == FormzStatus.submissionSuccess) {
+              bool isDataUpdated = true;
+              //! Pop and return true to inform that data is updated.
+              Navigator.of(context).pop(isDataUpdated);
             }
           }
         },
@@ -80,9 +119,35 @@ class EditUserProfileScreen extends StatelessWidget {
               FocusManager.instance.primaryFocus?.unfocus();
             },
             child: Scaffold(
+              //---------------- AppBar --------------------//
               appBar: AppBar(
                 title: const Text('Edit Profile'),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 4.w),
+
+                    //---------------- Reset --------------------//
+                    child: InkWell(
+                      onTap: state.status.isPure
+                          ? null
+                          : () {
+                              log(state.status.toString());
+                              // Dismiss keyboard
+                              FocusScope.of(context).unfocus();
+                              context.read<EditUserProfileCubit>().reset();
+                            },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.restore),
+                          Text(' Reset'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
+
+              //---------------- Body --------------------//
               body: ListView(
                 padding: EdgeInsets.symmetric(
                   horizontal: 8.w,
@@ -103,9 +168,12 @@ class EditUserProfileScreen extends StatelessWidget {
                           bottom: 0,
                           right: 0,
                           child: EditUserAvatarButton(
+                            showRemoveAvatarOption: !state.isAvatarEmpty,
                             // Remove Avatar
                             onRemoveAvatarSelected: () {
-                              //TODO
+                              context
+                                  .read<EditUserProfileCubit>()
+                                  .removeAvatar();
                             },
                             // From Gallery
                             onChooseFromGallerySelected: () =>
@@ -126,7 +194,7 @@ class EditUserProfileScreen extends StatelessWidget {
                   //---------------- Name --------------------//
                   EntryField(
                     label: 'Name',
-                    initialValue: state.name.value,
+                    controller: _nameController,
                     keyboardType: TextInputType.name,
                     onChanged: (name) =>
                         context.read<EditUserProfileCubit>().nameChanged(name),
@@ -140,7 +208,7 @@ class EditUserProfileScreen extends StatelessWidget {
                   //---------------- About --------------------//
                   EntryField(
                     label: 'About',
-                    initialValue: state.about,
+                    controller: _aboutController,
                     maxLines: 3,
                     maxLength: AppValues.userAboutMaxLength,
                     onChanged: (text) =>
@@ -152,8 +220,12 @@ class EditUserProfileScreen extends StatelessWidget {
                   //---------------- Submit --------------------//
                   CustomButton(
                     text: 'Submit',
+                    enabled: state.status == FormzStatus.valid,
                     onPressed: () {
-                      //TODO
+                      // Dismiss keyboard
+                      FocusScope.of(context).unfocus();
+                      //! Loading & Navigation are done by listener.
+                      context.read<EditUserProfileCubit>().submit();
                     },
                   ),
                 ],

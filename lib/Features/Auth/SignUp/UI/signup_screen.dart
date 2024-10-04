@@ -122,7 +122,7 @@ class SignupScreen extends StatelessWidget {
                         width: 50.w,
                         text: 'Sign up',
                         onPressed: () {
-                          //! Navigation is done by listener..
+                          //! Loading & Navigation are done by listener..
                           state.status.isValidated
                               ? context
                                   .read<SignupCubit>()

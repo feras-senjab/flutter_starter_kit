@@ -56,8 +56,12 @@ class _SubModel extends Equatable {
   }) {
     Map<String, dynamic> updateMap = {};
 
-    if (value1 != null) updateMap['value1'] = value1.fieldValue;
-    if (value2 != null) updateMap['value2'] = value2.fieldValue;
+    if (value1 != null && value1.fieldValue != this.value1) {
+      updateMap['value1'] = value1.fieldValue;
+    }
+    if (value2 != null && value2.fieldValue != this.value2) {
+      updateMap['value2'] = value2.fieldValue;
+    }
 
     return updateMap;
   }
