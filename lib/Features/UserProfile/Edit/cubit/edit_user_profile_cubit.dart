@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_kit/Global/Models/image_model.dart';
+import 'package:flutter_starter_kit/Helpers/strings_helper.dart';
 import 'package:form_validators/form_validators.dart';
 
 part 'edit_user_profile_state.dart';
@@ -38,7 +39,9 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
   /// Image model for empty avatar situation.
   final ImageModel emptyAvatarImageModel;
 
-  /// Helper method to create initial state
+  //-------------------- 🛠️ Helpers  🛠️ --------------------//
+
+  /// 🚧 Helper method to create initial state.
   static EditUserProfileState _initialState(
       FirestoreUserModel userModel, ImageModel emptyAvatarImageModel) {
     return EditUserProfileState(
@@ -51,7 +54,7 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
     );
   }
 
-  /// Helper method to present the type of change that an avatar image model would reflect.
+  /// 👤 Helper method to present the type of change that an avatar image model would reflect.
   _AvatarChangeType _getAvatarChangeType({required ImageModel avatar}) {
     // Check if it reflects that new avatar is set
     if (avatar.imageType == ImageType.file && avatar.file != null) {
@@ -68,7 +71,7 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
     }
   }
 
-  /// Helper method to present the change in status that happens due to fields values.
+  /// 🚦 Helper method to present the change in status that happens due to fields values.
   /// It returns:
   /// - [FormzStatus.invalid] if a field is not valid.
   /// - [FormzStatus.valid] if the fields are valid and has changes (ready to submit).
@@ -96,6 +99,17 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
     // Pure state if the form is valid and has no changes.
     return FormzStatus.pure;
   }
+
+  //-------------------- ✨ Actions ✨ --------------------//
+
+  /// 🔄 Emits the initial state
+  void reset() {
+    if (!state.status.isPure) {
+      emit(_initialState(userModel, emptyAvatarImageModel));
+    }
+  }
+
+  // # 👤 Avatar actions:
 
   void removeAvatar() {
     emit(
@@ -125,8 +139,13 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
     );
   }
 
+  // # 🔤 Fields Actions:
+
   void nameChanged(String value) {
-    final name = Name.dirty(value);
+    // Normalize `name` string
+    final normalized = StringsHelper.removeExtraSpaces(input: value);
+
+    final name = Name.dirty(normalized);
 
     emit(
       state.copyWith(
@@ -141,7 +160,9 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
   }
 
   void aboutChanged(String value) {
+    // Normalize `about` string
     String about = value.trim();
+
     if (about.isNotEmpty) {
       emit(
         state.copyWith(
@@ -155,12 +176,7 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
     }
   }
 
-  void reset() {
-    if (!state.status.isPure) {
-      emit(_initialState(userModel, emptyAvatarImageModel));
-    }
-  }
-
+  /// 🚀 Submit the form.
   void submit() async {
     // Confirm that form is ready to submit
     //! Note: `isValid` is implemented to reflect that form is valid and has changes.

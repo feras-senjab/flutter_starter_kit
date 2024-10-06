@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_storage_repository/cloud_storage_repository.dart';
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +31,16 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _aboutController = TextEditingController();
 
-  @override
-  void initState() {
+  /// Initializes the text editing controllers for the form fields by retrieving the current user's information.
+  void _initializeFieldsControllers() {
     final userModel = context.read<UserModelCubit>().state.userModel!;
     _nameController.text = userModel.name;
     _aboutController.text = userModel.about ?? '';
+  }
+
+  @override
+  void initState() {
+    _initializeFieldsControllers();
     super.initState();
   }
 
@@ -85,11 +88,6 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
         listenWhen: (previous, current) => previous.status != current.status,
         //---------------- Listener --------------------//
         listener: (context, state) {
-          // 🔄 On reset to initial state:
-          if (state.status == FormzStatus.pure) {
-            _nameController.text = state.name.value;
-            _aboutController.text = state.about ?? '';
-          }
           // ⏳ On Loading:
           if (state.status == FormzStatus.submissionInProgress) {
             LoadingHelper.showLoading(context);
@@ -126,15 +124,17 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                   Padding(
                     padding: EdgeInsets.only(right: 4.w),
 
-                    //---------------- Reset --------------------//
+                    //---------------- 🔄 Reset --------------------//
                     child: InkWell(
                       onTap: state.status.isPure
                           ? null
                           : () {
-                              log(state.status.toString());
                               // Dismiss keyboard
                               FocusScope.of(context).unfocus();
+                              // Reset the state
                               context.read<EditUserProfileCubit>().reset();
+                              // Reset text editing controllers
+                              _initializeFieldsControllers();
                             },
                       child: const Row(
                         children: [
@@ -155,7 +155,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                 children: [
                   SizedBox(height: 2.h),
 
-                  //---------------- Avatar --------------------//
+                  //---------------- 👤 Avatar --------------------//
                   Align(
                     child: Stack(
                       children: [
@@ -191,7 +191,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
 
                   SizedBox(height: 2.h),
 
-                  //---------------- Name --------------------//
+                  //---------------- 🔤 Name --------------------//
                   EntryField(
                     label: 'Name',
                     controller: _nameController,
@@ -205,7 +205,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
 
                   SizedBox(height: 2.h),
 
-                  //---------------- About --------------------//
+                  //---------------- 🔤 About --------------------//
                   EntryField(
                     label: 'About',
                     controller: _aboutController,
@@ -217,7 +217,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
 
                   SizedBox(height: 2.h),
 
-                  //---------------- Submit --------------------//
+                  //---------------- 🚀 Submit --------------------//
                   CustomButton(
                     text: 'Submit',
                     enabled: state.status == FormzStatus.valid,
