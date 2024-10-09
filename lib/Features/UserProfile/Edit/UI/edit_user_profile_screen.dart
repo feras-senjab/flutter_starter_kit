@@ -220,7 +220,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                   //---------------- 🚀 Submit --------------------//
                   CustomButton(
                     text: 'Submit',
-                    enabled: state.status == FormzStatus.valid,
+                    enabled: state.status.isValidated,
                     onPressed: () {
                       // Dismiss keyboard
                       FocusScope.of(context).unfocus();

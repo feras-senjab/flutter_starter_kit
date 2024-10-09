@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +86,8 @@ class CustomImage extends StatelessWidget {
             return _preview(
               context,
               child: Center(
-                child: CustomLoading(size: min(size.width, size.height) / 2),
+                child:
+                    CustomLoading(size: math.min(size.width, size.height) / 2),
               ),
             );
           },
@@ -96,7 +97,7 @@ class CustomImage extends StatelessWidget {
               context,
               child: Icon(
                 Icons.error,
-                size: min(size.width, size.height) * 0.3,
+                size: math.min(size.width, size.height) * 0.3,
                 color: Theme.of(context).colorScheme.error,
               ),
             );

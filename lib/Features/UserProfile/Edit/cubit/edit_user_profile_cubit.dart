@@ -39,6 +39,12 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
   /// Image model for empty avatar situation.
   final ImageModel emptyAvatarImageModel;
 
+  /// Stores the URL of the newly uploaded avatar after submission.
+  /// If the Firestore update fails post-upload, this URL is retained
+  /// for the next submission to avoid re-uploading.
+  /// IMPORTANT: Reset to null when a new avatar is selected or the state is reset.
+  String? _uploadedAvatarUrl;
+
   //-------------------- 🛠️ Helpers  🛠️ --------------------//
 
   /// 🚧 Helper method to create initial state.
@@ -104,6 +110,7 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
 
   /// 🔄 Emits the initial state
   void reset() {
+    _uploadedAvatarUrl = null;
     if (!state.status.isPure) {
       emit(_initialState(userModel, emptyAvatarImageModel));
     }
@@ -126,6 +133,7 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
   }
 
   void avatarChanged(ImageModel imageModel) {
+    _uploadedAvatarUrl = null;
     emit(
       state.copyWith(
         avatar: imageModel,
@@ -178,56 +186,58 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
 
   /// 🚀 Submit the form.
   void submit() async {
-    // Confirm that form is ready to submit
-    //! Note: `isValid` is implemented to reflect that form is valid and has changes.
-    if (!state.status.isValid) return;
+    // Confirm that form is ready to submit (has valid changes)
+    if (!state.status.isValidated) return;
 
     // ⏳ Emit Loading..
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
-    //---------------- Avatar Cloud Storage Operations --------------------//
-    String? cloudAvatarPath;
-    final avatarChangeLog = _getAvatarChangeType(avatar: state.avatar);
-    try {
-      // If new avatar is set, upload it to cloud storage and get Url.
-      if (avatarChangeLog == _AvatarChangeType.avatarSet) {
-        cloudAvatarPath = await usersStorageRepository.uploadUserAvatar(
-          userId: userModel.id,
-          file: state.avatar.file!,
-        );
-      }
-      // If the original avatar is removed (without setting new avatar), remove it from cloud.
-      else if (avatarChangeLog == _AvatarChangeType.avatarRemoved) {
-        await usersStorageRepository.deleteUserAvatar(userId: userModel.id);
-      }
-    } catch (error) {
-      developer.log('$error');
+    /// Implementing Cloud Storage and Firestore operations with the following order:
+    /// 1. 📤 Upload Avatar: if the user set new avatar, upload the image file to cloud.
+    /// 2. 📝 Firestore Update: Implement the appropriate update for the edited fields.
+    /// 3. 🗑️ Delete Avatar: if the user removed the avatar, delete the image file from cloud.
 
-      if (error is CloudStorageFileException) {
-        // ❌ 📁 Emit Failure (Cloud Storage File exception)
-        emit(
-          state.copyWith(
-            status: FormzStatus.submissionFailure,
-            errorMessage: error.message,
-          ),
-        );
-      } else {
-        // ❌ 🌩️ Emit Failure (Cloud Storage Platform Exception)
-        emit(
-          state.copyWith(
-            status: FormzStatus.submissionFailure,
-            errorMessage:
-                'Submission failed due to issue with uploading avatar!',
-          ),
-        );
-      }
+    final avatarChangeType = _getAvatarChangeType(avatar: state.avatar);
 
-      return; // Break the submission on failed cloud operation.
+    // 1. 📤 Upload Avatar (if it's set):
+    if (avatarChangeType == _AvatarChangeType.avatarSet) {
+      // Avoid uploading again if we already have the uploaded avatar URL (e.g., due to previous failure)
+      if (_uploadedAvatarUrl == null) {
+        try {
+          _uploadedAvatarUrl = await usersStorageRepository.uploadUserAvatar(
+            userId: userModel.id,
+            file: state.avatar.file!,
+          );
+        } catch (error) {
+          developer.log('$error');
+
+          if (error is CloudStorageFileException) {
+            // ❌ 📁 Emit Failure (Cloud Storage File exception)
+            emit(
+              state.copyWith(
+                status: FormzStatus.submissionFailure,
+                errorMessage: error.message,
+              ),
+            );
+          } else {
+            // ❌ 🌩️ Emit Failure (Cloud Storage Platform Exception)
+            emit(
+              state.copyWith(
+                status: FormzStatus.submissionFailure,
+                errorMessage:
+                    'Submission failed due to issue with uploading avatar!',
+              ),
+            );
+          }
+
+          return; // Terminate the submission process if the avatar upload fails.
+        }
+      }
     }
 
-    //---------------- Update Firestore Operations --------------------//
+    // 2. 📝 Firestore Update:
     try {
-      // updates only the changed fields with the appropriate values
+      // Updates only the changed fields with the appropriate values
       await usersRepository.updateFieldsFromMap(
         id: userModel.id,
         updateMap: userModel.toUpdateMap(
@@ -237,11 +247,11 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
           about: state.about == userModel.about
               ? null
               : FirestoreFieldUpdater.setField(state.about),
-          avatarUrl: avatarChangeLog == _AvatarChangeType.noAvatarChange
+          avatarUrl: avatarChangeType == _AvatarChangeType.noAvatarChange
               ? null
-              : (avatarChangeLog == _AvatarChangeType.avatarRemoved
+              : (avatarChangeType == _AvatarChangeType.avatarRemoved
                   ? FirestoreFieldUpdater.setField(null)
-                  : FirestoreFieldUpdater.setField(cloudAvatarPath)),
+                  : FirestoreFieldUpdater.setField(_uploadedAvatarUrl)),
         ),
       );
     } catch (error) {
@@ -254,7 +264,22 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
         ),
       );
 
-      return; // Break the submission on failed firestore update.
+      return; // Terminate the submission process if updating firestore fails.
+    }
+
+    // 3. 🗑️ Delete Avatar (if it's removed):
+    if (avatarChangeType == _AvatarChangeType.avatarRemoved) {
+      //! Note: At this stage, from the user's perspective, the update is complete.
+      //! The deletion is for system maintenance to reduce unnecessary storage costs.
+      // No await here as we do not want to block the user interface.
+      usersStorageRepository.deleteUserAvatar(userId: userModel.id).catchError(
+        (error) {
+          // Challenge:
+          // If avatar deletion fails after Firestore update, an unused file remains in storage.
+          // This rare issue doesn't affect the user, but incurs storage cost. Logging the error for monitoring.
+          developer.log('Error while deleting avatar: $error');
+        },
+      );
     }
 
     // ✅ Emit success.
