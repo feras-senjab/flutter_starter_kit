@@ -6,12 +6,13 @@ import 'package:cloud_storage_repository/src/helpers/file_helper.dart';
 import '../service/cloud_storage_service.dart';
 import 'dart:io';
 
-/// Handles user-specific operations related to Firebase Storage,
-/// such as uploading and deleting user avatars, with validation of file type and size.
+/// Handles user-specific operations related to Firebase Storage, with validation of file type and size.
 class CloudStorageUsersRepository {
   final CloudStorageService _service = CloudStorageService();
 
   /// Uploads a user avatar to Firebase Storage after validating the file type and size.
+  ///
+  /// Returns avatar's url string.
   ///
   /// Throws [CloudStorageFileException] if the file type is not an image or if the file size exceeds the allowed limit.
   ///
@@ -32,8 +33,9 @@ class CloudStorageUsersRepository {
         'File size exceeds the maximum allowed limit of ${FileHelper.formatBytes(Config.userAvatarMaxFileSize)}.',
       );
     }
-
-    final path = Config.userAvatarPath(userId);
+    // User's avatar path with unique file name based on timestamp
+    final path =
+        '${Config.userAvatarFolder(userId)}/${DateTime.now().millisecondsSinceEpoch}.jpg';
     try {
       // Attempt to upload the file and retrieve the download URL
       final resultUrl = await _service.uploadFile(path, file);
@@ -45,16 +47,15 @@ class CloudStorageUsersRepository {
     }
   }
 
-  /// Deletes a user's avatar from Firebase Storage.
+  /// Deletes a user's avatar from Firebase Storage using its URL.
   ///
   /// Throws [CloudStoragePlatformException] if there is an error during the deletion process.
   Future<void> deleteUserAvatar({
-    required String userId,
+    required String avatarUrl,
   }) async {
-    final path = Config.userAvatarPath(userId);
     try {
       // Attempt to delete the file from Firebase Storage
-      await _service.deleteFile(path);
+      await _service.deleteFileFromUrl(avatarUrl);
     } on CloudStoragePlatformException {
       // The exception is rethrown without additional handling.
       // This is just to indicate it's expected to be handled by the caller.
