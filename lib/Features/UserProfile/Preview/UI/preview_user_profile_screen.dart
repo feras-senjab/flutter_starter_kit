@@ -56,9 +56,9 @@ class PreviewUserProfileScreen extends StatelessWidget {
               children: [
                 SizedBox(height: 2.h),
                 CustomImage(
-                  imageModel: state.userModel!.avatarUrl == null
+                  imageModel: state.userModel.avatarUrl == null
                       ? const ImageModel.asset(AppAssets.userDefaultAvatar)
-                      : ImageModel.network(state.userModel!.avatarUrl!),
+                      : ImageModel.network(state.userModel.avatarUrl!),
                   size: Size(120.sp, 120.sp),
                   boxFit: BoxFit.cover,
                   shape: BoxShape.circle,
@@ -85,13 +85,13 @@ class PreviewUserProfileScreen extends StatelessWidget {
                 ListTile(
                   leading: const Text('Name'),
                   title: Text(
-                    state.userModel!.name,
+                    state.userModel.name,
                   ),
                 ),
                 ListTile(
                   leading: const Text('About'),
                   title: Text(
-                    state.userModel!.about ?? '',
+                    state.userModel.about ?? '',
                   ),
                 ),
               ],

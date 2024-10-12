@@ -33,7 +33,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
 
   /// Initializes the text editing controllers for the form fields by retrieving the current user's information.
   void _initializeFieldsControllers() {
-    final userModel = context.read<UserModelCubit>().state.userModel!;
+    final userModel = context.read<UserModelCubit>().state.userModel;
     _nameController.text = userModel.name;
     _aboutController.text = userModel.about ?? '';
   }
@@ -77,7 +77,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
     //---------------- BlocProvider --------------------//
     return BlocProvider(
       create: (context) => EditUserProfileCubit(
-        userModel: context.read<UserModelCubit>().state.userModel!,
+        userModel: context.read<UserModelCubit>().state.userModel,
         usersRepository: context.read<FirestoreUsersRepository>(),
         usersStorageRepository: context.read<CloudStorageUsersRepository>(),
         emptyAvatarImageModel:

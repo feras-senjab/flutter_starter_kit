@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             SizedBox(height: 5.h),
             Text(
-              'Welcome ${context.watch<UserModelCubit>().state.userModel!.name}',
+              'Welcome ${context.watch<UserModelCubit>().state.userModel.name}',
             ),
             SizedBox(height: 5.h),
             Row(

@@ -31,6 +31,12 @@ class FirestoreUserModel extends Equatable {
     ];
   }
 
+  static const empty = FirestoreUserModel(
+    id: '',
+    name: '',
+    email: '',
+  );
+
   FirestoreUserModel copyWith({
     String? id,
     String? name,

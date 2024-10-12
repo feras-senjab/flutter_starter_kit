@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element, unused_import
+// ignore_for_file: unused_element, unused_import, unused_field
 
 import 'dart:convert';
 
@@ -32,6 +32,11 @@ class _SubModel extends Equatable {
 
   @override
   List<Object> get props => [value1, value2];
+
+  static const empty = _SubModel(
+    value1: '',
+    value2: '',
+  );
 
   _SubModel copyWith({
     String? value1,

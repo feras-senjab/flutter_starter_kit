@@ -2,15 +2,15 @@ part of 'user_model_cubit.dart';
 
 class UserModelState extends Equatable {
   const UserModelState({
-    this.userModel,
+    this.userModel = FirestoreUserModel.empty,
     this.stateStatus = StateStatus.initial,
   });
 
-  final FirestoreUserModel? userModel;
+  final FirestoreUserModel userModel;
   final StateStatus stateStatus;
 
   @override
-  List<Object?> get props => [userModel, stateStatus];
+  List<Object> get props => [userModel, stateStatus];
 
   UserModelState copyWith({
     FirestoreUserModel? userModel,
