@@ -92,6 +92,8 @@ class AuthRepository {
   /// Returns UserCredential object on success.
   ///
   /// Throws error on fail.
+  ///
+  ///! NOTE: For IOS, this needs some configurations.
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final googleSignInAccount = await _googleSignIn.signIn();

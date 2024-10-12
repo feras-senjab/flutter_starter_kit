@@ -51,39 +51,4 @@ class LoginCubit extends Cubit<LoginState> {
           status: FormzStatus.submissionFailure, errorMessage: e.message));
     }
   }
-
-  void signInWithGoogle() async {
-    emit(state.copyWith(status: FormzStatus.submissionInProgress));
-
-    try {
-      // sign in with google..
-      final userCredential = await authRepository.signInWithGoogle();
-      // if new user.. write to database..
-      final isNewUser = userCredential!.additionalUserInfo!.isNewUser;
-      if (isNewUser) {
-        // write to database
-        await userRepository
-            .create(
-          id: userCredential.user!.uid,
-          model: FirestoreUserModel(
-            id: userCredential.user!.uid,
-            name: userCredential.user!.displayName!,
-            email: userCredential.user!.email!,
-          ),
-        )
-            .onError(
-          (error, stackTrace) {
-            // ! if regestering data fails, delete the user in authRepo..
-            authRepository.deleteCurrentUser();
-            throw Exception(error);
-          },
-        );
-      }
-      emit(state.copyWith(status: FormzStatus.submissionSuccess));
-      authBloc.add(AuthLogInRequested(authRepository.getAuthUser()));
-    } on AuthException catch (e) {
-      emit(state.copyWith(
-          status: FormzStatus.submissionFailure, errorMessage: e.message));
-    }
-  }
 }
