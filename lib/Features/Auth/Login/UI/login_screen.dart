@@ -125,6 +125,8 @@ class LoginScreen extends StatelessWidget {
                         width: 50.w,
                         text: 'Sign in',
                         onPressed: () {
+                          // Dismiss keyboard
+                          FocusScope.of(context).unfocus();
                           //! Loading & Navigation are done by listener..
                           state.status.isValidated
                               ? context
@@ -144,6 +146,8 @@ class LoginScreen extends StatelessWidget {
                         width: 50.w,
                         text: 'Google sign in',
                         onPressed: () {
+                          // Dismiss keyboard
+                          FocusScope.of(context).unfocus();
                           //! Loading & Navigation are done by listener..
                           context.read<LoginCubit>().signInWithGoogle();
                         },

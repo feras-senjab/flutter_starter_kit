@@ -115,6 +115,15 @@ class SignupCubit extends Cubit<SignupState> {
     } on AuthException catch (e) {
       emit(state.copyWith(
           status: FormzStatus.submissionFailure, errorMessage: e.message));
+    } catch (e) {
+      //TODO.. Would make firestore exception and show appropriate error message! (here and where it's needed)
+      // Firestore error
+      emit(
+        state.copyWith(
+            //! The message isn't appropriate!.. Also may need an action after error!!
+            status: FormzStatus.submissionFailure,
+            errorMessage: 'Error with the data service!'),
+      );
     }
   }
 }
