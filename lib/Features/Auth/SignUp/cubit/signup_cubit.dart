@@ -18,22 +18,6 @@ class SignupCubit extends Cubit<SignupState> {
   final AuthBloc authBloc;
   final FirestoreUsersRepository userRepository;
 
-  void nameChanged(String value) {
-    final name = Name.dirty(value);
-
-    emit(state.copyWith(
-      name: name,
-      status: Formz.validate(
-        [
-          name,
-          state.email,
-          state.password,
-          state.confirmedPassword,
-        ],
-      ),
-    ));
-  }
-
   void emailChanged(String value) {
     final email = Email.dirty(value);
 
@@ -41,7 +25,6 @@ class SignupCubit extends Cubit<SignupState> {
       email: email,
       status: Formz.validate(
         [
-          state.name,
           email,
           state.password,
           state.confirmedPassword,
@@ -57,7 +40,6 @@ class SignupCubit extends Cubit<SignupState> {
       password: password,
       status: Formz.validate(
         [
-          state.name,
           state.email,
           password,
           state.confirmedPassword,
@@ -73,7 +55,6 @@ class SignupCubit extends Cubit<SignupState> {
       confirmedPassword: confirmedPassword,
       status: Formz.validate(
         [
-          state.name,
           state.email,
           state.password,
           confirmedPassword,
@@ -83,47 +64,29 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   void signUpWithEmailAndPassword() async {
+    // Confirm validation
     if (!state.status.isValidated) return;
+
+    // ⏳ Emit Loading..
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
     try {
       // Sign up..
       await authRepository.signUpWithEmailAndPassword(
         email: state.email.value,
         password: state.password.value,
       );
-      // user id:
-      String userId = authRepository.getAuthUser().id;
-      // Register user's data..
-      await userRepository
-          .create(
-        id: userId,
-        model: FirestoreUserModel(
-          id: userId,
-          name: state.name.value,
-          email: state.email.value,
-        ),
-      )
-          .onError(
-        (error, stackTrace) {
-          // ! if regestering data fails, delete the user in authRepo..
-          authRepository.deleteCurrentUser();
-          throw Exception(error);
-        },
-      );
-      emit(state.copyWith(status: FormzStatus.submissionSuccess));
-      authBloc.add(AuthSignUpRequested(authRepository.getAuthUser()));
     } on AuthException catch (e) {
+      // ❌ Emit Failure
       emit(state.copyWith(
           status: FormzStatus.submissionFailure, errorMessage: e.message));
-    } catch (e) {
-      //TODO.. Would make firestore exception and show appropriate error message! (here and where it's needed)
-      // Firestore error
-      emit(
-        state.copyWith(
-            //! The message isn't appropriate!.. Also may need an action after error!!
-            status: FormzStatus.submissionFailure,
-            errorMessage: 'Error with the data service!'),
-      );
+      return; // Terminate the submission process on AuthException
     }
+
+    // ✅ Emit success
+    emit(state.copyWith(status: FormzStatus.submissionSuccess));
+
+    // 📤 Notify AuthBloc by dispatching AuthSignUpRequested with the new user
+    authBloc.add(AuthSignUpRequested(authRepository.getAuthUser()));
   }
 }

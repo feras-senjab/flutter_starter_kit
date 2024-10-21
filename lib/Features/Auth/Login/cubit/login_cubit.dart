@@ -37,18 +37,30 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void signInWithEmailAndPassword() async {
+    // Confirm validation
     if (!state.status.isValidated) return;
+
+    // ⏳ Emit Loading..
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
     try {
+      // Sign in..
       await authRepository.signInWithEmailAndPassword(
         email: state.email.value,
         password: state.password.value,
       );
-      emit(state.copyWith(status: FormzStatus.submissionSuccess));
-      authBloc.add(AuthLogInRequested(authRepository.getAuthUser()));
     } on AuthException catch (e) {
+      // ❌ Emit Failure
       emit(state.copyWith(
           status: FormzStatus.submissionFailure, errorMessage: e.message));
+
+      return; // Terminate the submission process on AuthException
     }
+
+    // ✅ Emit success
+    emit(state.copyWith(status: FormzStatus.submissionSuccess));
+
+    // 📤 Notify AuthBloc by dispatching AuthLogInRequested with the user
+    authBloc.add(AuthLogInRequested(authRepository.getAuthUser()));
   }
 }

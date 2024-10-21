@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_kit/Components/custom_button.dart';
 import 'package:flutter_starter_kit/Components/custom_image.dart';
-import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
+import 'package:flutter_starter_kit/Features/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Features/UserProfile/Edit/UI/edit_user_profile_screen.dart';
 import 'package:flutter_starter_kit/Global/Models/image_model.dart';
 import 'package:flutter_starter_kit/Global/app_assets.dart';

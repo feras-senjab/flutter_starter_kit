@@ -10,7 +10,7 @@ import 'package:flutter_starter_kit/Features/AppGate/UI/app_gate.dart';
 import 'package:flutter_starter_kit/Features/Auth/Login/UI/login_screen.dart';
 import 'package:flutter_starter_kit/Features/Auth/Logout/cubit/logout_cubit.dart';
 import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
-import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
+import 'package:flutter_starter_kit/Features/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/app_theme.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/cubit/theme_cubit.dart';
 import 'package:flutter_starter_kit/Global/app_preferences_keys.dart';

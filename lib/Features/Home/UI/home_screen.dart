@@ -1,13 +1,10 @@
 import 'package:flutter_starter_kit/Components/custom_button.dart';
-import 'package:flutter_starter_kit/Features/Auth/Login/UI/login_screen.dart';
 import 'package:flutter_starter_kit/Features/Auth/Logout/cubit/logout_cubit.dart';
-import 'package:flutter_starter_kit/Features/Logic/UserModel/cubit/user_model_cubit.dart';
+import 'package:flutter_starter_kit/Features/Auth/Logout/widgets/logout_consumer.dart';
+import 'package:flutter_starter_kit/Features/UserModel/cubit/user_model_cubit.dart';
 import 'package:flutter_starter_kit/Features/UserProfile/Preview/UI/preview_user_profile_screen.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/app_theme.dart';
 import 'package:flutter_starter_kit/Global/Style/Theme/cubit/theme_cubit.dart';
-import 'package:flutter_starter_kit/Global/enums.dart';
-import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
-import 'package:flutter_starter_kit/Helpers/loading_helper.dart';
 import 'package:flutter_starter_kit/Helpers/nav_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,36 +64,13 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Center(
-              child: BlocConsumer<LogoutCubit, LogoutState>(
-                listenWhen: (previous, current) =>
-                    previous.status != current.status,
-                listener: (context, state) {
-                  if (state.status == StateStatus.loading) {
-                    LoadingHelper.showLoading(context);
-                  } else {
-                    LoadingHelper.dismissLoading();
-                    if (state.status == StateStatus.failure) {
-                      DialogHelper.showCustomAlert(
-                        context: context,
-                        title: 'Error',
-                        content: 'Logout Failed!',
-                      );
-                    } else if (state.status == StateStatus.success) {
-                      NavHelper.pushAndRemoveUntil(
-                          context, const LoginScreen());
-                    }
-                  }
-                },
-                builder: (context, state) {
-                  return CustomButton(
-                    text: 'Sign out',
-                    width: 30.w,
-                    onPressed: () {
-                      context.read<LogoutCubit>().logout();
-                      //! Loading & Navigation are done by listener.
-                    },
-                  );
-                },
+              child: LogoutConsumer(
+                logoutActionWidget: CustomButton(
+                  text: 'Logout',
+                  onPressed: () {
+                    context.read<LogoutCubit>().logout();
+                  },
+                ),
               ),
             )
           ],

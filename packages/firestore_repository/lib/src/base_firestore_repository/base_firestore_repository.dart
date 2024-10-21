@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'exceptions/firestore_exception.dart';
 import 'query_helpers/query_helpers.dart';
 
 /// Base class for Firestore repositories.
@@ -33,14 +34,16 @@ abstract class BaseFirestoreRepository<T> {
   /// Returns:
   /// - A `Future` that resolves to `true` if the document exists, `false` otherwise.
   ///
-  /// Throws:
-  /// - An `Exception` if the operation fails.
+  /// Throws [FirestoreException] if the operation fails.
   Future<bool> isExisted({required String id}) async {
     try {
       final doc = await _firestore.collection(collectionPath).doc(id).get();
       return doc.exists;
     } catch (e) {
-      throw Exception('Failed to check if document exists: $e');
+      throw FirestoreException(
+        message: 'Failed to check if document exists: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 
@@ -55,8 +58,8 @@ abstract class BaseFirestoreRepository<T> {
   /// - A `Future` that resolves to the document ID.
   ///
   /// Throws:
-  /// - An `Exception` if [id] is provided, [replaceExistedDoc] is set to false, and a document with the same ID exists.
-  /// - An `Exception` if the operation fails.
+  /// - [FirestoreException] if [id] is provided, [replaceExistedDoc] is set to false, and a document with the same ID exists.
+  /// - [FirestoreException] if the operation fails.
   Future<String> create({
     required T model,
     String? id,
@@ -65,7 +68,8 @@ abstract class BaseFirestoreRepository<T> {
     // Check for existing document
     if (id != null && await isExisted(id: id)) {
       if (!replaceExistedDoc) {
-        throw Exception('A document with the same ID already exists!');
+        throw FirestoreException(
+            message: 'A document with the same ID already exists!');
       }
     }
 
@@ -78,7 +82,10 @@ abstract class BaseFirestoreRepository<T> {
       await docRef.set(toMap(model));
       return docRef.id; // Return the document ID
     } catch (e) {
-      throw Exception('Failed to create document: $e');
+      throw FirestoreException(
+        message: 'Failed to create document: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 
@@ -91,8 +98,7 @@ abstract class BaseFirestoreRepository<T> {
   /// - [id] : The document ID to update.
   /// - [model] : The model instance with the updated data.
   ///
-  /// Throws:
-  /// - An `Exception` if the operation fails.
+  /// Throws [FirestoreException] if the operation fails.
   Future<void> updateFullDocument({
     required String id,
     required T model,
@@ -103,7 +109,10 @@ abstract class BaseFirestoreRepository<T> {
           .doc(id)
           .update(toMap(model)); // Update only specified fields
     } catch (e) {
-      throw Exception('Failed to update the full document: $e');
+      throw FirestoreException(
+        message: 'Failed to update the full document: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 
@@ -118,8 +127,7 @@ abstract class BaseFirestoreRepository<T> {
   /// - [id] : The document ID to update.
   /// - [updateMap] : A `Map<String, dynamic>` of the fields and their new values to update.
   ///
-  /// Throws:
-  /// - An `Exception` if the operation fails.
+  /// Throws [FirestoreException] if the operation fails.
   Future<void> updateFieldsFromMap({
     required String id,
     required Map<String, dynamic> updateMap,
@@ -131,7 +139,10 @@ abstract class BaseFirestoreRepository<T> {
           .doc(id)
           .update(updateMap); // Update the fields in the document
     } catch (e) {
-      throw Exception('Failed to update fields: $e');
+      throw FirestoreException(
+        message: 'Failed to update fields: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 
@@ -140,13 +151,15 @@ abstract class BaseFirestoreRepository<T> {
   /// Parameters:
   /// - [id] : The document ID to delete.
   ///
-  /// Throws:
-  /// - An `Exception` if the operation fails.
+  /// Throws [FirestoreException] if the operation fails.
   Future<void> delete({required String id}) async {
     try {
       await _firestore.collection(collectionPath).doc(id).delete();
     } catch (e) {
-      throw Exception('Failed to delete document: $e');
+      throw FirestoreException(
+        message: 'Failed to delete document: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 
@@ -158,14 +171,16 @@ abstract class BaseFirestoreRepository<T> {
   /// Returns:
   /// - A `Future` that resolves to the model instance, or `null` if the document does not exist.
   ///
-  /// Throws:
-  /// - An `Exception` if the query fails.
+  /// Throws [FirestoreException] if the query fails.
   Future<T?> getById({required String id}) async {
     try {
       final doc = await _firestore.collection(collectionPath).doc(id).get();
       return doc.exists ? fromMap(doc.data()!) : null;
     } catch (e) {
-      throw Exception('Failed to get document: $e');
+      throw FirestoreException(
+        message: 'Failed to get document: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 
@@ -179,8 +194,7 @@ abstract class BaseFirestoreRepository<T> {
   /// Returns:
   /// - A `Future` that resolves to a `List<T>` of items matching the criteria.
   ///
-  /// Throws:
-  /// - An `Exception` if the query fails.
+  /// Throws [FirestoreException] if the query fails.
   Future<List<T>> getItems({
     Pagination? pagination,
     List<OrderBy>? orderBy,
@@ -224,7 +238,10 @@ abstract class BaseFirestoreRepository<T> {
         return fromMap(data);
       }).toList();
     } catch (e) {
-      throw Exception('Failed to get documents: $e');
+      throw FirestoreException(
+        message: 'Failed to get documents: $e',
+        code: e is FirebaseException ? e.code : null,
+      );
     }
   }
 }

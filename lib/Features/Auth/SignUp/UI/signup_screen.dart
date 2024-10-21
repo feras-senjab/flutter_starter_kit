@@ -3,8 +3,8 @@ import 'package:flutter_starter_kit/Components/entry_field.dart';
 import 'package:flutter_starter_kit/Components/custom_button.dart';
 import 'package:flutter_starter_kit/Components/inkwell_text.dart';
 import 'package:flutter_starter_kit/Features/Auth/SignUp/cubit/signup_cubit.dart';
+import 'package:flutter_starter_kit/Features/RegisterUserData/UI/register_user_data_screen.dart';
 import 'package:flutter_starter_kit/Features/Auth/bloc/auth_bloc.dart';
-import 'package:flutter_starter_kit/Features/AppGate/UI/app_gate.dart';
 import 'package:flutter_starter_kit/Helpers/dialog_helper.dart';
 import 'package:flutter_starter_kit/Helpers/loading_helper.dart';
 import 'package:flutter_starter_kit/Helpers/nav_helper.dart';
@@ -39,7 +39,8 @@ class SignupScreen extends StatelessWidget {
                 content: state.errorMessage ?? 'Something Wrong!',
               );
             } else if (state.status == FormzStatus.submissionSuccess) {
-              NavHelper.pushAndRemoveUntil(context, const AppGate());
+              NavHelper.pushAndRemoveUntil(
+                  context, const RegisterUserDataScreen());
             }
           }
         },
@@ -65,16 +66,6 @@ class SignupScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineLarge),
                     SizedBox(
                       height: 5.h,
-                    ),
-                    EntryField(
-                      label: 'Name',
-                      maxLines: 1,
-                      keyboardType: TextInputType.name,
-                      onChanged: (name) =>
-                          context.read<SignupCubit>().nameChanged(name),
-                      errorText: state.name.invalid
-                          ? Name.showNameErrorMessage(state.name.error)
-                          : null,
                     ),
                     EntryField(
                       label: 'Email',
